@@ -32,3 +32,59 @@
         transform: rotate(360deg);
     }
 }
+
+/* Playfair Display & Montserrat Font */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+.font-playfair {
+    font-family: 'Playfair Display', serif;
+}
+
+.font-montserrat {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F8F5F2;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #D7C49E;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #B38E5D;
+}
+
+/* Selection color */
+::selection {
+    background: #5D4E6D;
+    color: #F8F5F2;
+}
+
+/* Button hover transitions */
+button, a {
+    transition: transform 0.2s ease, background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Image hover effects */
+img {
+    transition: transform 0.5s ease;
+}
+
+/* Focus styles */
+input:focus, textarea:focus, select:focus, button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(93, 78, 109, 0.2);
+}
