@@ -10,22 +10,96 @@ export const siteInfo = {
   ownerName: "Elizabeth Towne"
 };
 
+// Development notice
+export const developmentNotice = {
+  title: "Growing Together",
+  message: "Our sanctuary is in its early developmental stages, and we're excited to grow with our community! Coming soon: a large community cooking area and upgraded restroom facilities. Join us on this journey as we create something beautiful together."
+};
+
+// Group-based packages
 export const packages = [
   {
     id: 1,
-    name: "Weekend Sanctuary",
+    name: "Intimate Gathering",
+    groupSize: "Up to 10 guests",
     duration: "3 nights",
-    price: 1800,
-    description: "Perfect for weekend gatherings, spiritual retreats, or family reunions"
+    weekendPrice: 800,
+    weekdayPrice: 600,
+    description: "Perfect for small spiritual circles, family getaways, or intimate friend groups"
   },
   {
     id: 2,
-    name: "Weekday Retreat",
-    duration: "4 nights",
-    price: 1500,
-    description: "Extended mid-week getaway for deeper connection with nature"
+    name: "Community Circle",
+    groupSize: "11-20 guests",
+    duration: "3 nights",
+    weekendPrice: 1400,
+    weekdayPrice: 1100,
+    description: "Ideal for yoga retreats, women's circles, or medium-sized family reunions"
+  },
+  {
+    id: 3,
+    name: "Large Gathering",
+    groupSize: "21-30 guests",
+    duration: "3 nights",
+    weekendPrice: 1900,
+    weekdayPrice: 1500,
+    description: "Great for workshops, wedding parties, or community celebrations"
+  },
+  {
+    id: 4,
+    name: "Grand Retreat",
+    groupSize: "31-40 guests",
+    duration: "3 nights",
+    weekendPrice: 2400,
+    weekdayPrice: 1900,
+    description: "Our largest package for major events, festivals, or large group retreats"
   }
 ];
+
+// Classes and workshops
+export const classes = [
+  {
+    id: 1,
+    name: "Plant Medicine Wisdom",
+    description: "Learn about local medicinal plants, their traditional uses, and how to identify them in the wild. Discover nature's pharmacy right on our land.",
+    duration: "3-4 hours",
+    icon: "Leaf"
+  },
+  {
+    id: 2,
+    name: "Wilderness Survival Skills",
+    description: "Master essential camping and outdoor skills—fire building, shelter construction, foraging basics, and how to live harmoniously with the land.",
+    duration: "Half day",
+    icon: "Compass"
+  },
+  {
+    id: 3,
+    name: "Land Connection Workshop",
+    description: "Learn to read the landscape, understand local ecosystems, and develop a deeper spiritual connection with the natural world around you.",
+    duration: "2-3 hours",
+    icon: "Trees"
+  },
+  {
+    id: 4,
+    name: "Custom Group Sessions",
+    description: "Bring your own instructor or work with us to create custom yoga sessions, meditation circles, drum circles, or wellness workshops.",
+    duration: "Flexible",
+    icon: "Users"
+  }
+];
+
+// Venue rental info
+export const venueRental = {
+  title: "Venue for Your Vision",
+  description: "Are you a yoga instructor, wellness practitioner, or event organizer looking for a unique natural venue? We partner with businesses and individuals to provide the perfect setting for your offerings. Host your retreats, workshops, classes, or special events on our beautiful 12-acre sanctuary.",
+  features: [
+    "Flexible scheduling & package options",
+    "Work with your existing group or help you promote",
+    "Perfect for yoga, meditation, wellness retreats",
+    "Ideal for team building & corporate retreats",
+    "Available for photography & creative sessions"
+  ]
+};
 
 export const reviews = [
   {
@@ -37,7 +111,7 @@ export const reviews = [
   },
   {
     id: 2,
-    text: "Finally, an RV park that didn't judge our vintage camper! Our family reunion was perfect.",
+    text: "Finally, an RV park that didn't judge our vintage camper! Our family reunion was perfect. The kids loved exploring the woods.",
     author: "The Chen Family",
     title: "Family Reunion",
     rating: 5
@@ -51,7 +125,7 @@ export const reviews = [
   },
   {
     id: 4,
-    text: "The stars, the silence, the freedom… our yoga retreat was transformative.",
+    text: "The stars, the silence, the freedom… our yoga retreat was transformative. We'll be back!",
     author: "River",
     title: "Yoga Instructor",
     rating: 5
@@ -61,19 +135,48 @@ export const reviews = [
 export const amenities = [
   { id: 1, name: "Fire Pits", description: "Multiple fire circles for drum circles & storytelling", icon: "Flame" },
   { id: 2, name: "Water Station", description: "Fresh water access for all campers", icon: "Droplets" },
-  { id: 3, name: "Restroom", description: "Permanent restroom facility (coming soon)", icon: "Bath" },
-  { id: 4, name: "Secluded Parking", description: "Private parking for RVs and vehicles", icon: "Car" },
+  { id: 3, name: "Outhouse Facilities", description: "Basic facilities with upgrades coming soon", icon: "Bath" },
+  { id: 4, name: "Secluded Parking", description: "Private parking for RVs and vehicles of all types", icon: "Car" },
   { id: 5, name: "Open Fields", description: "Perfect for meditation, yoga & ceremonies", icon: "Trees" },
   { id: 6, name: "Stargazing Skies", description: "Minimal light pollution for celestial viewing", icon: "Star" },
-  { id: 7, name: "Digital Guidebook", description: "Local spiritual spots & recommendations", icon: "BookOpen" },
-  { id: 8, name: "Natural Altars", description: "Bring your own crystals, flags & decor", icon: "Sparkles" }
+  { id: 7, name: "Kid-Friendly", description: "Safe spaces for children to explore nature", icon: "Baby" },
+  { id: 8, name: "Pet-Friendly", description: "Your furry companions are welcome here", icon: "Dog" }
+];
+
+// Coming soon features
+export const comingSoon = [
+  {
+    id: 1,
+    name: "Community Kitchen",
+    description: "A large covered cooking area for group meals and gatherings",
+    timeline: "Coming 2026"
+  },
+  {
+    id: 2,
+    name: "Upgraded Restrooms",
+    description: "Modern, comfortable restroom facilities",
+    timeline: "Coming 2026"
+  },
+  {
+    id: 3,
+    name: "Shower Facilities",
+    description: "Hot water shower stations for guests",
+    timeline: "Future Plans"
+  }
 ];
 
 export const values = [
   { id: 1, title: "Inclusivity", description: "All groups, all ages, all RVs welcome", icon: "Heart" },
-  { id: 2, title: "Freedom", description: "No rigid rules, no age restrictions", icon: "Wind" },
+  { id: 2, title: "Freedom", description: "No rigid rules—your gathering, your way", icon: "Wind" },
   { id: 3, title: "Spirituality", description: "Land that welcomes ceremony, reflection & joy", icon: "Moon" },
   { id: 4, title: "Community", description: "A space for togetherness & connection", icon: "Users" }
+];
+
+export const highlights = [
+  { id: 1, title: "Kid-Friendly", description: "Safe, nature-rich environment for children to explore, learn, and play", icon: "Baby" },
+  { id: 2, title: "Pet-Friendly", description: "Your four-legged family members are always welcome at The Lair", icon: "Dog" },
+  { id: 3, title: "All RVs Welcome", description: "Vintage, modern, large or small—every RV finds a home here", icon: "Caravan" },
+  { id: 4, title: "Learn & Grow", description: "Classes in plant medicine, wilderness skills, and more", icon: "Sprout" }
 ];
 
 export const groupTypes = [
@@ -83,7 +186,10 @@ export const groupTypes = [
   "LGBTQ+ Gathering",
   "Friends Trip",
   "RV Club",
-  "Yoga/Wellness",
+  "Yoga/Wellness Retreat",
+  "Business/Workshop",
+  "Photography/Creative",
+  "Educational Group",
   "Other"
 ];
 
@@ -112,6 +218,24 @@ export const propertyPhotos = [
     url: "https://customer-assets.emergentagent.com/job_spiritual-sanctuary/artifacts/soqtcmzy_1000002352.jpg",
     alt: "Wild blackberry bushes on the property",
     category: "The Land"
+  },
+  {
+    id: 9,
+    url: "https://customer-assets.emergentagent.com/job_spiritual-sanctuary/artifacts/2pzv2kdh_ChatGPT%20Image%20Jan%2019%2C%202026%2C%2012_27_50%20PM.png",
+    alt: "Community gathering around campfire",
+    category: "Groups in Action"
+  },
+  {
+    id: 10,
+    url: "https://customer-assets.emergentagent.com/job_spiritual-sanctuary/artifacts/hl4gzmhl_ChatGPT%20Image%20Jan%2019%2C%202026%2C%20wyyy.png",
+    alt: "Friends enjoying the campsite",
+    category: "Groups in Action"
+  },
+  {
+    id: 11,
+    url: "https://customer-assets.emergentagent.com/job_spiritual-sanctuary/artifacts/ejuhoaos_ChatGPT%20Image%20Jan%2019%2C%202026%2C%2011_06_40%20AM.png",
+    alt: "Campsite with string lights",
+    category: "Ceremonial Spaces"
   }
 ];
 
