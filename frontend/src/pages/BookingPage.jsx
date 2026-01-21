@@ -115,54 +115,6 @@ const BookingPage = () => {
     }
   };
 
-  if (submitted) {
-    return (
-      <div className="bg-[#F8F5F2] min-h-screen">
-        <section className="py-32">
-          <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="bg-white rounded-3xl p-12 shadow-xl">
-              <div className="w-20 h-20 bg-[#8A9B68] rounded-full flex items-center justify-center mx-auto mb-6">
-                <Check className="w-10 h-10 text-white" />
-              </div>
-              <h1 className="font-playfair text-3xl font-bold text-[#5D4E6D] mb-4">
-                Inquiry Received!
-              </h1>
-              <p className="text-[#6B8CBE] font-montserrat mb-6">
-                Thank you for your interest in The Lair of Liz. Liz will review your request and send you a personalized confirmation email within 24-48 hours with next steps and payment details.
-              </p>
-              <div className="bg-[#F8F5F2] rounded-xl p-4 mb-6">
-                <p className="text-[#5D4E6D] font-montserrat text-sm">
-                  <strong>Your Selected Package:</strong> {formData.pricingTier}
-                </p>
-                {selectedTier && (
-                  <>
-                    <p className="text-[#8A9B68] font-montserrat text-sm mt-1">
-                      Estimated Total: ${basePrice.toLocaleString()} ({nights} nights)
-                    </p>
-                    <p className="text-[#B38E5D] font-montserrat text-sm">
-                      Deposit to Reserve: ${deposit}
-                    </p>
-                  </>
-                )}
-              </div>
-              <p className="text-[#8A9B68] font-montserrat text-sm mb-8">
-                Check your email at <strong>{formData.email}</strong>
-              </p>
-              <Link to="/">
-                <Button 
-                  data-testid="return-home-btn"
-                  className="bg-[#5D4E6D] hover:bg-[#B38E5D] text-white font-montserrat font-medium px-8 py-3 rounded-full transition-all duration-300"
-                >
-                  Return Home
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-[#F8F5F2] min-h-screen">
       {/* Hero Section */}
