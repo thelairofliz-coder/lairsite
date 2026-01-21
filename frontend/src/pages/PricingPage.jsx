@@ -245,7 +245,12 @@ const PricingPage = () => {
                       </div>
                     </div>
                     <h4 className="font-playfair text-lg font-semibold text-[#5D4E6D] mb-2">{item.name}</h4>
-                    <p className="text-[#6B8CBE] font-montserrat text-sm">{item.description}</p>
+                    <p className="text-[#6B8CBE] font-montserrat text-sm mb-3">{item.description}</p>
+                    {item.timing && (
+                      <p className="text-[#B38E5D] font-montserrat text-xs font-medium flex items-center gap-1">
+                        <Calendar className="w-3 h-3" /> {item.timing}
+                      </p>
+                    )}
                   </div>
                 );
               })}
