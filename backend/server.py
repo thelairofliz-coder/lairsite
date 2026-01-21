@@ -44,10 +44,17 @@ class BookingCreate(BaseModel):
     phone: Optional[str] = None
     groupType: str
     groupSize: str
+    pricingTier: Optional[str] = None
     startDate: str
     endDate: str
-    packageType: str
+    numberOfNights: Optional[int] = 2
     specialRequests: Optional[str] = None
+    addOns: Optional[List[str]] = []
+    hasChildren: Optional[bool] = False
+    hasPets: Optional[bool] = False
+    bringingFacilitator: Optional[bool] = False
+    estimatedTotal: Optional[float] = None
+    deposit: Optional[float] = None
 
 class Booking(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -56,10 +63,17 @@ class Booking(BaseModel):
     phone: Optional[str] = None
     groupType: str
     groupSize: str
+    pricingTier: Optional[str] = None
     startDate: str
     endDate: str
-    packageType: str
+    numberOfNights: Optional[int] = 2
     specialRequests: Optional[str] = None
+    addOns: Optional[List[str]] = []
+    hasChildren: Optional[bool] = False
+    hasPets: Optional[bool] = False
+    bringingFacilitator: Optional[bool] = False
+    estimatedTotal: Optional[float] = None
+    deposit: Optional[float] = None
     status: str = "pending"
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
