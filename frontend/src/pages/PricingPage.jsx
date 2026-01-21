@@ -59,37 +59,45 @@ const PricingPage = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-5">
             {pricingTiers.map((tier, index) => (
               <div 
                 key={tier.id}
-                className={`bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border-2 ${
-                  index === 3 ? 'border-[#B38E5D]' : 'border-transparent hover:border-[#D7C49E]'
+                className={`bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl transition-all duration-300 border-2 ${
+                  index === 4 ? 'border-[#B38E5D]' : 'border-transparent hover:border-[#D7C49E]'
                 }`}
               >
-                {index === 3 && (
-                  <div className="bg-[#B38E5D] text-white text-xs font-montserrat font-semibold px-3 py-1 rounded-full inline-block mb-4">
+                {index === 4 && (
+                  <div className="bg-[#B38E5D] text-white text-xs font-montserrat font-semibold px-3 py-1 rounded-full inline-block mb-3">
                     MAX CAPACITY
+                  </div>
+                )}
+                {tier.isFlexible && (
+                  <div className="bg-[#8A9B68] text-white text-xs font-montserrat font-semibold px-3 py-1 rounded-full inline-block mb-3">
+                    FLEXIBLE SIZE
                   </div>
                 )}
                 <div className="flex items-center gap-2 mb-2">
                   <Users className="w-5 h-5 text-[#5D4E6D]" />
-                  <span className="font-montserrat text-sm text-[#8A9B68]">{tier.groupSize} People</span>
+                  <span className="font-montserrat text-sm text-[#8A9B68]">
+                    {tier.isFlexible ? `1-${tier.groupSize}` : tier.groupSize} People
+                  </span>
                 </div>
-                <h3 className="font-playfair text-xl font-bold text-[#5D4E6D] mb-2">{tier.name}</h3>
+                <h3 className="font-playfair text-lg font-bold text-[#5D4E6D] mb-2">{tier.name}</h3>
                 
-                <div className="my-4">
-                  <span className="font-playfair text-4xl font-bold text-[#B38E5D]">${tier.pricePerPersonPerNight}</span>
-                  <span className="text-[#6B8CBE] font-montserrat text-sm">/person/night</span>
+                <div className="my-3">
+                  <span className="font-playfair text-3xl font-bold text-[#B38E5D]">${tier.pricePerPersonPerNight}</span>
+                  <span className="text-[#6B8CBE] font-montserrat text-xs">/person/night</span>
                 </div>
                 
-                <div className="bg-[#F8F5F2] rounded-lg p-3 mb-4">
-                  <p className="font-montserrat text-sm text-[#5D4E6D]">
+                <div className="bg-[#F8F5F2] rounded-lg p-2 mb-3">
+                  <p className="font-montserrat text-xs text-[#5D4E6D]">
                     <strong>2-Night Weekend:</strong> ${tier.totalWeekend.toLocaleString()}
+                    {tier.isFlexible && <span className="text-[#8A9B68]"> (max)</span>}
                   </p>
                 </div>
                 
-                <p className="text-[#6B8CBE] font-montserrat text-sm mb-4 leading-relaxed">
+                <p className="text-[#6B8CBE] font-montserrat text-xs mb-3 leading-relaxed">
                   {tier.idealFor}
                 </p>
                 
