@@ -20,6 +20,17 @@ export const developmentNotice = {
 // Core Retreat Pricing - Per person, per night (2-night minimum)
 export const pricingTiers = [
   {
+    id: 0,
+    name: "The Couple's Escape",
+    groupSize: 2,
+    pricePerNight: 100,
+    pricePerPersonPerNight: 50,
+    totalWeekend: 200,
+    idealFor: "Romantic getaways, solo travelers with a partner, intimate escapes",
+    deposit: 100,
+    isPerNight: true
+  },
+  {
     id: 1,
     name: "The Intimate Pod",
     groupSize: 10,
