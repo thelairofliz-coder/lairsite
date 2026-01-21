@@ -10,6 +10,7 @@ import AboutPage from "./pages/AboutPage";
 import GalleryPage from "./pages/GalleryPage";
 import AmenitiesPage from "./pages/AmenitiesPage";
 import BookingPage from "./pages/BookingPage";
+import PricingPage from "./pages/PricingPage";
 import ReviewsPage from "./pages/ReviewsPage";
 import ContactPage from "./pages/ContactPage";
 import PaymentPage from "./pages/PaymentPage";
@@ -24,6 +25,7 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/amenities" element={<AmenitiesPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
             <Route path="/booking" element={<BookingPage />} />
             <Route path="/reviews" element={<ReviewsPage />} />
             <Route path="/contact" element={<ContactPage />} />
