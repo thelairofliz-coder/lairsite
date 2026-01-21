@@ -109,7 +109,8 @@ A comprehensive website for The Lair of Liz, an elevated rustic sanctuary locate
 
 ## Completed Work (January 2026)
 - [x] Multi-page website with bohemian/rustic theme
-- [x] Full pricing structure with 4 tiers
+- [x] Full pricing structure with 5 tiers (including small group 1-5 people)
+- [x] "How many people?" input field on booking and payment pages
 - [x] Add-ons section (farm experiences, comfort upgrades, professional support)
 - [x] Booking & cancellation policies
 - [x] PayPal + Venmo payment integration
