@@ -44,6 +44,7 @@ const Footer = () => {
             <ul className="space-y-3 font-montserrat text-sm">
               <li><Link to="/about" className="text-white/80 hover:text-[#B38E5D] transition-colors duration-300">About Us</Link></li>
               <li><Link to="/gallery" className="text-white/80 hover:text-[#B38E5D] transition-colors duration-300">Gallery</Link></li>
+              <li><Link to="/pricing" className="text-white/80 hover:text-[#B38E5D] transition-colors duration-300">Pricing & Packages</Link></li>
               <li><Link to="/amenities" className="text-white/80 hover:text-[#B38E5D] transition-colors duration-300">Amenities & Vibes</Link></li>
               <li><Link to="/booking" className="text-white/80 hover:text-[#B38E5D] transition-colors duration-300">Book Your Stay</Link></li>
               <li><Link to="/reviews" className="text-white/80 hover:text-[#B38E5D] transition-colors duration-300">Reviews</Link></li>
