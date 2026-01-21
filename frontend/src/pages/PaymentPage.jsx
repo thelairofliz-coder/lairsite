@@ -18,10 +18,15 @@ const PaymentPage = () => {
       : pricingTiers[0]
   );
   const [nights, setNights] = useState(bookingData?.numberOfNights || 2);
+  const [peopleCount, setPeopleCount] = useState(
+    bookingData?.exactPeopleCount 
+      ? parseInt(bookingData.exactPeopleCount) 
+      : (selectedTier?.groupSize || 2)
+  );
   const [paymentType, setPaymentType] = useState('deposit'); // 'deposit' or 'full'
 
-  // Calculate totals
-  const totalPrice = selectedTier.pricePerPersonPerNight * selectedTier.groupSize * nights;
+  // Calculate totals based on actual people count
+  const totalPrice = selectedTier.pricePerPersonPerNight * peopleCount * nights;
   const depositAmount = selectedTier.deposit;
   const amountToPay = paymentType === 'deposit' ? depositAmount : totalPrice;
 
