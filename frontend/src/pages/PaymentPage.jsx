@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { CreditCard, Check, Shield, ArrowRight, Feather, AlertCircle } from 'lucide-react';
+import { CreditCard, Check, Shield, ArrowRight, Feather, AlertCircle, Users } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { siteInfo, packages } from '../data/mock';
+import { siteInfo, pricingTiers } from '../data/mock';
 
 const PAYPAL_CLIENT_ID = 'LMQB7GDA9RQ3L';
 
@@ -10,7 +10,11 @@ const PaymentPage = () => {
   const [searchParams] = useSearchParams();
   const bookingId = searchParams.get('booking');
   const [paymentStatus, setPaymentStatus] = useState('pending'); // pending, processing, success, error
-  const [selectedPackage, setSelectedPackage] = useState(packages[0]);
+  const [selectedTier, setSelectedTier] = useState(pricingTiers[0]);
+  const [nights, setNights] = useState(2);
+
+  // Calculate total based on tier and nights
+  const totalPrice = selectedTier.pricePerPersonPerNight * selectedTier.groupSize * nights;
 
   useEffect(() => {
     // Load PayPal SDK
@@ -23,9 +27,9 @@ const PaymentPage = () => {
           createOrder: (data, actions) => {
             return actions.order.create({
               purchase_units: [{
-                description: `${selectedPackage.name} - The Lair of Liz`,
+                description: `${selectedTier.name} (${nights} nights) - The Lair of Liz`,
                 amount: {
-                  value: selectedPackage.price.toString()
+                  value: totalPrice.toString()
                 }
               }]
             });
@@ -46,9 +50,12 @@ const PaymentPage = () => {
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      const existingScript = document.querySelector(`script[src*="paypal"]`);
+      if (existingScript) {
+        document.body.removeChild(existingScript);
+      }
     };
-  }, [selectedPackage]);
+  }, [selectedTier, nights, totalPrice]);
 
   if (paymentStatus === 'success') {
     return (
@@ -67,12 +74,16 @@ const PaymentPage = () => {
               </p>
               <div className="bg-[#8A9B68]/10 p-6 rounded-xl mb-8">
                 <p className="text-[#5D4E6D] font-montserrat">
-                  <strong>Package:</strong> {selectedPackage.name}<br />
-                  <strong>Amount Paid:</strong> ${selectedPackage.price.toLocaleString()}
+                  <strong>Package:</strong> {selectedTier.name} ({selectedTier.groupSize} people)<br />
+                  <strong>Duration:</strong> {nights} nights<br />
+                  <strong>Amount Paid:</strong> ${totalPrice.toLocaleString()}
                 </p>
               </div>
               <Link to="/">
-                <Button className="bg-[#5D4E6D] hover:bg-[#B38E5D] text-white font-montserrat font-medium px-8 py-3 rounded-full">
+                <Button 
+                  data-testid="payment-return-home-btn"
+                  className="bg-[#5D4E6D] hover:bg-[#B38E5D] text-white font-montserrat font-medium px-8 py-3 rounded-full"
+                >
                   Return Home
                 </Button>
               </Link>
@@ -86,37 +97,37 @@ const PaymentPage = () => {
   return (
     <div className="bg-[#F8F5F2] min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-32 bg-[#5D4E6D]">
+      <section className="relative py-24 bg-[#5D4E6D]">
         <div className="absolute top-10 right-10 opacity-10">
           <Feather className="w-48 h-48 text-white rotate-12" />
         </div>
         
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <span className="text-[#D7C49E] font-montserrat text-sm tracking-widest uppercase">Secure Payment</span>
-          <h1 className="font-playfair text-5xl md:text-6xl font-bold text-white mt-4 mb-6">
+          <h1 className="font-playfair text-4xl md:text-5xl font-bold text-white mt-4 mb-6">
             Secure Your Stay
           </h1>
-          <p className="text-xl text-[#D7C49E] font-montserrat leading-relaxed">
+          <p className="text-lg text-[#D7C49E] font-montserrat leading-relaxed">
             Complete your booking with secure PayPal payment
           </p>
         </div>
       </section>
 
       {/* Payment Section */}
-      <section className="py-24">
+      <section className="py-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Package Selection */}
             <div>
-              <h2 className="font-playfair text-2xl font-bold text-[#5D4E6D] mb-6">Select Your Package</h2>
+              <h2 className="font-playfair text-2xl font-bold text-[#5D4E6D] mb-6">Select Your Group Size</h2>
               
-              <div className="space-y-4">
-                {packages.map((pkg) => (
+              <div className="space-y-4 mb-8">
+                {pricingTiers.map((tier) => (
                   <div
-                    key={pkg.id}
-                    onClick={() => setSelectedPackage(pkg)}
+                    key={tier.id}
+                    onClick={() => setSelectedTier(tier)}
                     className={`bg-white rounded-xl p-6 cursor-pointer transition-all duration-300 border-2 ${
-                      selectedPackage.id === pkg.id
+                      selectedTier.id === tier.id
                         ? 'border-[#5D4E6D] shadow-lg'
                         : 'border-transparent shadow-sm hover:shadow-md'
                     }`}
@@ -124,38 +135,68 @@ const PaymentPage = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                          selectedPackage.id === pkg.id
+                          selectedTier.id === tier.id
                             ? 'border-[#5D4E6D] bg-[#5D4E6D]'
                             : 'border-[#D7C49E]'
                         }`}>
-                          {selectedPackage.id === pkg.id && (
+                          {selectedTier.id === tier.id && (
                             <Check className="w-4 h-4 text-white" />
                           )}
                         </div>
                         <div>
-                          <h3 className="font-playfair text-lg font-semibold text-[#5D4E6D]">{pkg.name}</h3>
-                          <p className="text-[#8A9B68] font-montserrat text-sm">{pkg.duration}</p>
+                          <h3 className="font-playfair text-lg font-semibold text-[#5D4E6D]">{tier.name}</h3>
+                          <p className="text-[#8A9B68] font-montserrat text-sm flex items-center gap-1">
+                            <Users className="w-4 h-4" /> {tier.groupSize} people
+                          </p>
                         </div>
                       </div>
-                      <p className="font-playfair text-2xl font-bold text-[#B38E5D]">
-                        ${pkg.price.toLocaleString()}
-                      </p>
+                      <div className="text-right">
+                        <p className="font-playfair text-xl font-bold text-[#B38E5D]">
+                          ${tier.pricePerPersonPerNight}
+                        </p>
+                        <p className="text-[#6B8CBE] font-montserrat text-xs">/person/night</p>
+                      </div>
                     </div>
                     <p className="text-[#6B8CBE] font-montserrat text-sm mt-3 ml-10">
-                      {pkg.description}
+                      {tier.idealFor}
                     </p>
                   </div>
                 ))}
               </div>
 
+              {/* Number of Nights */}
+              <div className="bg-white rounded-xl p-6 shadow-sm mb-8">
+                <label className="block font-montserrat font-medium text-[#5D4E6D] mb-3">
+                  Number of Nights
+                </label>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setNights(Math.max(2, nights - 1))}
+                    className="w-10 h-10 rounded-full bg-[#F8F5F2] text-[#5D4E6D] font-bold hover:bg-[#5D4E6D] hover:text-white transition-colors"
+                  >
+                    -
+                  </button>
+                  <span className="font-playfair text-2xl font-bold text-[#5D4E6D] w-12 text-center">{nights}</span>
+                  <button
+                    type="button"
+                    onClick={() => setNights(nights + 1)}
+                    className="w-10 h-10 rounded-full bg-[#F8F5F2] text-[#5D4E6D] font-bold hover:bg-[#5D4E6D] hover:text-white transition-colors"
+                  >
+                    +
+                  </button>
+                </div>
+                <p className="text-[#8A9B68] font-montserrat text-xs mt-2">2-night minimum required</p>
+              </div>
+
               {/* Process Steps */}
-              <div className="mt-10">
+              <div>
                 <h3 className="font-playfair text-lg font-semibold text-[#5D4E6D] mb-4">How It Works</h3>
                 <div className="space-y-4">
                   {[
                     'Fill out booking inquiry form',
                     'Receive confirmation & invoice via email',
-                    'Pay securely through PayPal',
+                    'Pay deposit securely through PayPal',
                     'Get your digital guidebook & access details'
                   ].map((step, index) => (
                     <div key={index} className="flex items-center gap-4">
@@ -180,17 +221,24 @@ const PaymentPage = () => {
                 {/* Order Summary */}
                 <div className="bg-[#F8F5F2] rounded-xl p-6 mb-6">
                   <h3 className="font-montserrat font-medium text-[#5D4E6D] mb-4">Order Summary</h3>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-[#6B8CBE] font-montserrat">{selectedPackage.name}</span>
-                    <span className="text-[#5D4E6D] font-montserrat font-medium">${selectedPackage.price.toLocaleString()}</span>
+                  <div className="space-y-2 mb-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[#6B8CBE] font-montserrat">{selectedTier.name}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-[#8A9B68] font-montserrat">
+                        {selectedTier.groupSize} people × ${selectedTier.pricePerPersonPerNight}/night × {nights} nights
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center text-sm text-[#8A9B68] font-montserrat mb-4">
-                    <span>{selectedPackage.duration}</span>
-                  </div>
-                  <div className="border-t border-[#D7C49E]/30 pt-4">
+                  <div className="border-t border-[#D7C49E]/30 pt-4 space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="font-playfair font-bold text-[#5D4E6D]">Total</span>
-                      <span className="font-playfair text-2xl font-bold text-[#B38E5D]">${selectedPackage.price.toLocaleString()}</span>
+                      <span className="font-playfair text-2xl font-bold text-[#B38E5D]">${totalPrice.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-[#8A9B68] font-montserrat">Deposit Required</span>
+                      <span className="font-montserrat font-medium text-[#5D4E6D]">${selectedTier.deposit}</span>
                     </div>
                   </div>
                 </div>
