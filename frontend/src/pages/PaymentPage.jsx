@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
-import { CreditCard, Check, Shield, ArrowRight, Feather, AlertCircle, Users } from 'lucide-react';
+import { useSearchParams, useLocation, Link } from 'react-router-dom';
+import { CreditCard, Check, Shield, ArrowRight, Feather, AlertCircle, Users, Smartphone } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { siteInfo, pricingTiers } from '../data/mock';
 
@@ -8,29 +8,57 @@ const PAYPAL_CLIENT_ID = 'LMQB7GDA9RQ3L';
 
 const PaymentPage = () => {
   const [searchParams] = useSearchParams();
-  const bookingId = searchParams.get('booking');
+  const location = useLocation();
+  const bookingData = location.state?.bookingData || null;
+  
   const [paymentStatus, setPaymentStatus] = useState('pending'); // pending, processing, success, error
-  const [selectedTier, setSelectedTier] = useState(pricingTiers[0]);
-  const [nights, setNights] = useState(2);
+  const [selectedTier, setSelectedTier] = useState(
+    bookingData?.pricingTier 
+      ? pricingTiers.find(t => t.name === bookingData.pricingTier) || pricingTiers[0]
+      : pricingTiers[0]
+  );
+  const [nights, setNights] = useState(bookingData?.numberOfNights || 2);
+  const [paymentType, setPaymentType] = useState('deposit'); // 'deposit' or 'full'
 
-  // Calculate total based on tier and nights
+  // Calculate totals
   const totalPrice = selectedTier.pricePerPersonPerNight * selectedTier.groupSize * nights;
+  const depositAmount = selectedTier.deposit;
+  const amountToPay = paymentType === 'deposit' ? depositAmount : totalPrice;
 
   useEffect(() => {
-    // Load PayPal SDK
+    // Load PayPal SDK with Venmo enabled
+    const existingScript = document.querySelector('script[src*="paypal.com/sdk"]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
     const script = document.createElement('script');
-    script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`;
+    // Enable Venmo funding source
+    script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD&enable-funding=venmo`;
     script.async = true;
     script.onload = () => {
       if (window.paypal) {
+        // Clear existing buttons
+        const container = document.getElementById('paypal-button-container');
+        if (container) {
+          container.innerHTML = '';
+        }
+        
         window.paypal.Buttons({
+          style: {
+            layout: 'vertical',
+            color: 'blue',
+            shape: 'pill',
+            label: 'pay'
+          },
           createOrder: (data, actions) => {
             return actions.order.create({
               purchase_units: [{
-                description: `${selectedTier.name} (${nights} nights) - The Lair of Liz`,
+                description: `${selectedTier.name} - ${paymentType === 'deposit' ? 'Deposit' : 'Full Payment'} - The Lair of Liz`,
                 amount: {
-                  value: totalPrice.toString()
-                }
+                  value: amountToPay.toString()
+                },
+                custom_id: bookingData?.id || 'direct-payment'
               }]
             });
           },
@@ -50,12 +78,12 @@ const PaymentPage = () => {
     document.body.appendChild(script);
 
     return () => {
-      const existingScript = document.querySelector(`script[src*="paypal"]`);
-      if (existingScript) {
-        document.body.removeChild(existingScript);
+      const scriptToRemove = document.querySelector('script[src*="paypal.com/sdk"]');
+      if (scriptToRemove) {
+        scriptToRemove.remove();
       }
     };
-  }, [selectedTier, nights, totalPrice]);
+  }, [selectedTier, nights, amountToPay, paymentType, bookingData]);
 
   if (paymentStatus === 'success') {
     return (
@@ -70,14 +98,28 @@ const PaymentPage = () => {
                 Payment Successful!
               </h1>
               <p className="text-[#6B8CBE] font-montserrat mb-6">
-                Thank you for your payment. Your booking at The Lair of Liz is confirmed! You'll receive a confirmation email shortly with all the details for your stay.
+                Thank you for your {paymentType === 'deposit' ? 'deposit' : 'payment'}! Your booking at The Lair of Liz is {paymentType === 'deposit' ? 'reserved' : 'confirmed'}! Liz will send you a confirmation email shortly with all the details for your stay.
               </p>
-              <div className="bg-[#8A9B68]/10 p-6 rounded-xl mb-8">
+              <div className="bg-[#8A9B68]/10 p-6 rounded-xl mb-8 text-left">
                 <p className="text-[#5D4E6D] font-montserrat">
                   <strong>Package:</strong> {selectedTier.name} ({selectedTier.groupSize} people)<br />
                   <strong>Duration:</strong> {nights} nights<br />
-                  <strong>Amount Paid:</strong> ${totalPrice.toLocaleString()}
+                  <strong>Amount Paid:</strong> ${amountToPay.toLocaleString()} ({paymentType === 'deposit' ? 'Deposit' : 'Full Payment'})
+                  {paymentType === 'deposit' && (
+                    <>
+                      <br /><strong>Remaining Balance:</strong> ${(totalPrice - depositAmount).toLocaleString()} (due 7 days before arrival)
+                    </>
+                  )}
                 </p>
+                {bookingData && (
+                  <div className="mt-4 pt-4 border-t border-[#8A9B68]/20">
+                    <p className="text-[#5D4E6D] font-montserrat text-sm">
+                      <strong>Guest:</strong> {bookingData.name}<br />
+                      <strong>Email:</strong> {bookingData.email}<br />
+                      <strong>Dates:</strong> {bookingData.startDate} to {bookingData.endDate}
+                    </p>
+                  </div>
+                )}
               </div>
               <Link to="/">
                 <Button 
@@ -97,7 +139,7 @@ const PaymentPage = () => {
   return (
     <div className="bg-[#F8F5F2] min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-24 bg-[#5D4E6D]">
+      <section className="relative py-20 bg-[#5D4E6D]">
         <div className="absolute top-10 right-10 opacity-10">
           <Feather className="w-48 h-48 text-white rotate-12" />
         </div>
@@ -105,105 +147,178 @@ const PaymentPage = () => {
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <span className="text-[#D7C49E] font-montserrat text-sm tracking-widest uppercase">Secure Payment</span>
           <h1 className="font-playfair text-4xl md:text-5xl font-bold text-white mt-4 mb-6">
-            Secure Your Stay
+            Complete Your Booking
           </h1>
-          <p className="text-lg text-[#D7C49E] font-montserrat leading-relaxed">
-            Complete your booking with secure PayPal payment
+          <p className="text-lg text-[#D7C49E] font-montserrat leading-relaxed flex items-center justify-center gap-3">
+            <Shield className="w-5 h-5" />
+            Pay securely with PayPal or Venmo
           </p>
         </div>
       </section>
 
+      {/* Booking Summary (if coming from booking form) */}
+      {bookingData && (
+        <section className="py-8 bg-[#8A9B68]/10 border-b border-[#8A9B68]/20">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-3 mb-4">
+              <Check className="w-6 h-6 text-[#8A9B68]" />
+              <h2 className="font-playfair text-xl font-semibold text-[#5D4E6D]">Booking Inquiry Submitted!</h2>
+            </div>
+            <p className="text-[#6B8CBE] font-montserrat">
+              <strong>{bookingData.name}</strong> • {bookingData.groupType} • {bookingData.startDate} to {bookingData.endDate}
+            </p>
+          </div>
+        </section>
+      )}
+
       {/* Payment Section */}
-      <section className="py-16">
+      <section className="py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Package Selection */}
             <div>
-              <h2 className="font-playfair text-2xl font-bold text-[#5D4E6D] mb-6">Select Your Group Size</h2>
-              
-              <div className="space-y-4 mb-8">
-                {pricingTiers.map((tier) => (
+              {!bookingData && (
+                <>
+                  <h2 className="font-playfair text-2xl font-bold text-[#5D4E6D] mb-6">Select Your Group Size</h2>
+                  
+                  <div className="space-y-4 mb-8">
+                    {pricingTiers.map((tier) => (
+                      <div
+                        key={tier.id}
+                        onClick={() => setSelectedTier(tier)}
+                        className={`bg-white rounded-xl p-5 cursor-pointer transition-all duration-300 border-2 ${
+                          selectedTier.id === tier.id
+                            ? 'border-[#5D4E6D] shadow-lg'
+                            : 'border-transparent shadow-sm hover:shadow-md'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                              selectedTier.id === tier.id
+                                ? 'border-[#5D4E6D] bg-[#5D4E6D]'
+                                : 'border-[#D7C49E]'
+                            }`}>
+                              {selectedTier.id === tier.id && (
+                                <Check className="w-4 h-4 text-white" />
+                              )}
+                            </div>
+                            <div>
+                              <h3 className="font-playfair text-lg font-semibold text-[#5D4E6D]">{tier.name}</h3>
+                              <p className="text-[#8A9B68] font-montserrat text-sm flex items-center gap-1">
+                                <Users className="w-4 h-4" /> {tier.groupSize} people
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-playfair text-xl font-bold text-[#B38E5D]">
+                              ${tier.pricePerPersonPerNight}
+                            </p>
+                            <p className="text-[#6B8CBE] font-montserrat text-xs">/person/night</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Number of Nights */}
+                  <div className="bg-white rounded-xl p-6 shadow-sm mb-8">
+                    <label className="block font-montserrat font-medium text-[#5D4E6D] mb-3">
+                      Number of Nights
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setNights(Math.max(2, nights - 1))}
+                        className="w-10 h-10 rounded-full bg-[#F8F5F2] text-[#5D4E6D] font-bold hover:bg-[#5D4E6D] hover:text-white transition-colors"
+                      >
+                        -
+                      </button>
+                      <span className="font-playfair text-2xl font-bold text-[#5D4E6D] w-12 text-center">{nights}</span>
+                      <button
+                        type="button"
+                        onClick={() => setNights(nights + 1)}
+                        className="w-10 h-10 rounded-full bg-[#F8F5F2] text-[#5D4E6D] font-bold hover:bg-[#5D4E6D] hover:text-white transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <p className="text-[#8A9B68] font-montserrat text-xs mt-2">2-night minimum required</p>
+                  </div>
+                </>
+              )}
+
+              {/* Payment Type Selection */}
+              <div className="bg-white rounded-xl p-6 shadow-sm mb-8">
+                <label className="block font-montserrat font-medium text-[#5D4E6D] mb-4">
+                  Payment Option
+                </label>
+                <div className="space-y-3">
                   <div
-                    key={tier.id}
-                    onClick={() => setSelectedTier(tier)}
-                    className={`bg-white rounded-xl p-6 cursor-pointer transition-all duration-300 border-2 ${
-                      selectedTier.id === tier.id
-                        ? 'border-[#5D4E6D] shadow-lg'
-                        : 'border-transparent shadow-sm hover:shadow-md'
+                    onClick={() => setPaymentType('deposit')}
+                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                      paymentType === 'deposit'
+                        ? 'border-[#5D4E6D] bg-[#5D4E6D]/5'
+                        : 'border-[#D7C49E]/30 hover:border-[#5D4E6D]/50'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                          selectedTier.id === tier.id
-                            ? 'border-[#5D4E6D] bg-[#5D4E6D]'
-                            : 'border-[#D7C49E]'
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-full border-2 ${
+                          paymentType === 'deposit' ? 'border-[#5D4E6D] bg-[#5D4E6D]' : 'border-[#D7C49E]'
                         }`}>
-                          {selectedTier.id === tier.id && (
-                            <Check className="w-4 h-4 text-white" />
-                          )}
+                          {paymentType === 'deposit' && <Check className="w-3 h-3 text-white m-auto" />}
                         </div>
                         <div>
-                          <h3 className="font-playfair text-lg font-semibold text-[#5D4E6D]">{tier.name}</h3>
-                          <p className="text-[#8A9B68] font-montserrat text-sm flex items-center gap-1">
-                            <Users className="w-4 h-4" /> {tier.groupSize} people
-                          </p>
+                          <p className="font-montserrat font-medium text-[#5D4E6D]">Pay Deposit Now</p>
+                          <p className="text-[#8A9B68] font-montserrat text-xs">Secure your dates, pay balance later</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-playfair text-xl font-bold text-[#B38E5D]">
-                          ${tier.pricePerPersonPerNight}
-                        </p>
-                        <p className="text-[#6B8CBE] font-montserrat text-xs">/person/night</p>
-                      </div>
+                      <p className="font-playfair text-xl font-bold text-[#B38E5D]">${depositAmount}</p>
                     </div>
-                    <p className="text-[#6B8CBE] font-montserrat text-sm mt-3 ml-10">
-                      {tier.idealFor}
-                    </p>
                   </div>
-                ))}
-              </div>
-
-              {/* Number of Nights */}
-              <div className="bg-white rounded-xl p-6 shadow-sm mb-8">
-                <label className="block font-montserrat font-medium text-[#5D4E6D] mb-3">
-                  Number of Nights
-                </label>
-                <div className="flex items-center gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setNights(Math.max(2, nights - 1))}
-                    className="w-10 h-10 rounded-full bg-[#F8F5F2] text-[#5D4E6D] font-bold hover:bg-[#5D4E6D] hover:text-white transition-colors"
+                  
+                  <div
+                    onClick={() => setPaymentType('full')}
+                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                      paymentType === 'full'
+                        ? 'border-[#5D4E6D] bg-[#5D4E6D]/5'
+                        : 'border-[#D7C49E]/30 hover:border-[#5D4E6D]/50'
+                    }`}
                   >
-                    -
-                  </button>
-                  <span className="font-playfair text-2xl font-bold text-[#5D4E6D] w-12 text-center">{nights}</span>
-                  <button
-                    type="button"
-                    onClick={() => setNights(nights + 1)}
-                    className="w-10 h-10 rounded-full bg-[#F8F5F2] text-[#5D4E6D] font-bold hover:bg-[#5D4E6D] hover:text-white transition-colors"
-                  >
-                    +
-                  </button>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 rounded-full border-2 ${
+                          paymentType === 'full' ? 'border-[#5D4E6D] bg-[#5D4E6D]' : 'border-[#D7C49E]'
+                        }`}>
+                          {paymentType === 'full' && <Check className="w-3 h-3 text-white m-auto" />}
+                        </div>
+                        <div>
+                          <p className="font-montserrat font-medium text-[#5D4E6D]">Pay Full Amount</p>
+                          <p className="text-[#8A9B68] font-montserrat text-xs">Complete payment in one transaction</p>
+                        </div>
+                      </div>
+                      <p className="font-playfair text-xl font-bold text-[#B38E5D]">${totalPrice.toLocaleString()}</p>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-[#8A9B68] font-montserrat text-xs mt-2">2-night minimum required</p>
               </div>
 
-              {/* Process Steps */}
-              <div>
+              {/* How It Works */}
+              <div className="bg-[#F8F5F2] rounded-xl p-6">
                 <h3 className="font-playfair text-lg font-semibold text-[#5D4E6D] mb-4">How It Works</h3>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {[
-                    'Fill out booking inquiry form',
-                    'Receive confirmation & invoice via email',
-                    'Pay deposit securely through PayPal',
-                    'Get your digital guidebook & access details'
+                    'Submit booking inquiry',
+                    'Pay deposit to secure your dates',
+                    'Receive confirmation email from Liz',
+                    'Pay remaining balance 7 days before arrival'
                   ].map((step, index) => (
-                    <div key={index} className="flex items-center gap-4">
-                      <div className="w-8 h-8 rounded-full bg-[#5D4E6D] text-white flex items-center justify-center font-montserrat font-semibold text-sm">
+                    <div key={index} className="flex items-center gap-3">
+                      <div className="w-7 h-7 rounded-full bg-[#5D4E6D] text-white flex items-center justify-center font-montserrat font-semibold text-xs">
                         {index + 1}
                       </div>
-                      <p className="text-[#6B8CBE] font-montserrat">{step}</p>
+                      <p className="text-[#6B8CBE] font-montserrat text-sm">{step}</p>
                     </div>
                   ))}
                 </div>
@@ -212,7 +327,7 @@ const PaymentPage = () => {
 
             {/* Payment Form */}
             <div>
-              <div className="bg-white rounded-3xl p-8 shadow-xl">
+              <div className="bg-white rounded-3xl p-8 shadow-xl sticky top-24">
                 <div className="flex items-center gap-3 mb-6">
                   <CreditCard className="w-6 h-6 text-[#5D4E6D]" />
                   <h2 className="font-playfair text-xl font-bold text-[#5D4E6D]">Payment Details</h2>
@@ -232,19 +347,43 @@ const PaymentPage = () => {
                     </div>
                   </div>
                   <div className="border-t border-[#D7C49E]/30 pt-4 space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-playfair font-bold text-[#5D4E6D]">Total</span>
-                      <span className="font-playfair text-2xl font-bold text-[#B38E5D]">${totalPrice.toLocaleString()}</span>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-[#6B8CBE] font-montserrat">Total Retreat Cost</span>
+                      <span className="font-montserrat text-[#5D4E6D]">${totalPrice.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between items-center text-sm">
-                      <span className="text-[#8A9B68] font-montserrat">Deposit Required</span>
-                      <span className="font-montserrat font-medium text-[#5D4E6D]">${selectedTier.deposit}</span>
+                      <span className="text-[#6B8CBE] font-montserrat">Deposit Required</span>
+                      <span className="font-montserrat text-[#5D4E6D]">${depositAmount}</span>
                     </div>
+                    <div className="flex justify-between items-center pt-2 border-t border-[#D7C49E]/30">
+                      <span className="font-playfair font-bold text-[#5D4E6D]">
+                        {paymentType === 'deposit' ? 'Pay Now (Deposit)' : 'Pay Now (Full)'}
+                      </span>
+                      <span className="font-playfair text-2xl font-bold text-[#B38E5D]">${amountToPay.toLocaleString()}</span>
+                    </div>
+                    {paymentType === 'deposit' && (
+                      <p className="text-[#8A9B68] font-montserrat text-xs">
+                        Remaining ${(totalPrice - depositAmount).toLocaleString()} due 7 days before arrival
+                      </p>
+                    )}
                   </div>
                 </div>
 
-                {/* PayPal Button Container */}
-                <div id="paypal-button-container" className="mb-6"></div>
+                {/* Payment Methods Info */}
+                <div className="flex items-center justify-center gap-4 mb-4 text-[#6B8CBE]">
+                  <div className="flex items-center gap-2">
+                    <Smartphone className="w-4 h-4" />
+                    <span className="font-montserrat text-sm">Venmo</span>
+                  </div>
+                  <span>•</span>
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    <span className="font-montserrat text-sm">PayPal</span>
+                  </div>
+                </div>
+
+                {/* PayPal/Venmo Button Container */}
+                <div id="paypal-button-container" className="mb-6 min-h-[150px]"></div>
 
                 {paymentStatus === 'processing' && (
                   <div className="text-center py-4">
@@ -263,14 +402,14 @@ const PaymentPage = () => {
                 {/* Security Note */}
                 <div className="flex items-center gap-3 justify-center text-[#8A9B68]">
                   <Shield className="w-5 h-5" />
-                  <p className="font-montserrat text-sm">All payments are secure and protected by PayPal</p>
+                  <p className="font-montserrat text-sm">Secure payments via PayPal & Venmo</p>
                 </div>
               </div>
 
-              {/* Alternative Payment */}
+              {/* Alternative Contact */}
               <div className="mt-6 text-center">
                 <p className="text-[#6B8CBE] font-montserrat text-sm mb-4">
-                  Prefer to pay another way? Contact us directly.
+                  Questions about payment? Contact Liz directly.
                 </p>
                 <Link to="/contact">
                   <Button variant="outline" className="border-[#5D4E6D] text-[#5D4E6D] hover:bg-[#5D4E6D] hover:text-white font-montserrat rounded-full">
