@@ -317,22 +317,6 @@ const BookingPage = () => {
                 </div>
               </div>
 
-              {/* Selected Package Display */}
-              {selectedTier && (
-                <div className="bg-[#8A9B68]/10 rounded-xl p-4 border border-[#8A9B68]/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-playfair text-lg font-semibold text-[#5D4E6D]">{selectedTier.name}</h4>
-                      <p className="text-[#8A9B68] font-montserrat text-sm">{selectedTier.groupSize} people • ${selectedTier.pricePerPersonPerNight}/person/night</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-playfair text-2xl font-bold text-[#B38E5D]">${basePrice.toLocaleString()}</p>
-                      <p className="text-[#6B8CBE] font-montserrat text-xs">Est. for {nights} nights</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {/* Dates */}
               <div className="grid md:grid-cols-3 gap-6">
                 <div>
