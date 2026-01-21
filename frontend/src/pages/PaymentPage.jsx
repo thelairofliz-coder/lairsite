@@ -190,7 +190,12 @@ const PaymentPage = () => {
                     {pricingTiers.map((tier) => (
                       <div
                         key={tier.id}
-                        onClick={() => setSelectedTier(tier)}
+                        onClick={() => {
+                          setSelectedTier(tier);
+                          if (!tier.isFlexible) {
+                            setPeopleCount(tier.groupSize);
+                          }
+                        }}
                         className={`bg-white rounded-xl p-5 cursor-pointer transition-all duration-300 border-2 ${
                           selectedTier.id === tier.id
                             ? 'border-[#5D4E6D] shadow-lg'
@@ -211,7 +216,7 @@ const PaymentPage = () => {
                             <div>
                               <h3 className="font-playfair text-lg font-semibold text-[#5D4E6D]">{tier.name}</h3>
                               <p className="text-[#8A9B68] font-montserrat text-sm flex items-center gap-1">
-                                <Users className="w-4 h-4" /> {tier.groupSize} people
+                                <Users className="w-4 h-4" /> {tier.isFlexible ? `1-${tier.groupSize}` : tier.groupSize} people
                               </p>
                             </div>
                           </div>
@@ -224,6 +229,35 @@ const PaymentPage = () => {
                         </div>
                       </div>
                     ))}
+                  </div>
+
+                  {/* How Many People */}
+                  <div className="bg-[#5D4E6D]/5 rounded-xl p-6 border border-[#5D4E6D]/20 mb-8">
+                    <label className="block font-playfair text-lg font-semibold text-[#5D4E6D] mb-3 flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      How many people in your group?
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setPeopleCount(Math.max(1, peopleCount - 1))}
+                        className="w-10 h-10 rounded-full bg-white text-[#5D4E6D] font-bold hover:bg-[#5D4E6D] hover:text-white transition-colors border border-[#D7C49E]/30"
+                      >
+                        -
+                      </button>
+                      <span className="font-playfair text-3xl font-bold text-[#5D4E6D] w-16 text-center">{peopleCount}</span>
+                      <button
+                        type="button"
+                        onClick={() => setPeopleCount(Math.min(40, peopleCount + 1))}
+                        className="w-10 h-10 rounded-full bg-white text-[#5D4E6D] font-bold hover:bg-[#5D4E6D] hover:text-white transition-colors border border-[#D7C49E]/30"
+                      >
+                        +
+                      </button>
+                      <span className="text-[#6B8CBE] font-montserrat">guests</span>
+                    </div>
+                    <p className="text-[#8A9B68] font-montserrat text-sm mt-2">
+                      {peopleCount} people × ${selectedTier.pricePerPersonPerNight}/night = ${selectedTier.pricePerPersonPerNight * peopleCount}/night
+                    </p>
                   </div>
 
                   {/* Number of Nights */}
