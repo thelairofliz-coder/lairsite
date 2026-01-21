@@ -178,7 +178,7 @@ const BookingPage = () => {
           <p className="text-[#6B8CBE] font-montserrat text-sm mb-6">
             All rates are per person, per night. <strong>2-night minimum</strong> required.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {pricingTiers.map((tier) => (
               <button
                 key={tier.id}
@@ -192,7 +192,9 @@ const BookingPage = () => {
               >
                 <div className="flex items-center gap-1 mb-1">
                   <Users className="w-4 h-4 text-[#5D4E6D]" />
-                  <span className="font-montserrat text-xs text-[#8A9B68]">{tier.groupSize} people</span>
+                  <span className="font-montserrat text-xs text-[#8A9B68]">
+                    {tier.isFlexible ? `1-${tier.groupSize}` : tier.groupSize} people
+                  </span>
                 </div>
                 <h3 className="font-playfair text-sm font-semibold text-[#5D4E6D]">{tier.name}</h3>
                 <p className="font-playfair text-xl font-bold text-[#B38E5D]">${tier.pricePerPersonPerNight}<span className="text-xs text-[#6B8CBE]">/pp/night</span></p>
@@ -213,6 +215,51 @@ const BookingPage = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* How Many People - Prominent Field */}
+              <div className="bg-[#5D4E6D]/5 rounded-xl p-6 border border-[#5D4E6D]/20">
+                <Label htmlFor="exactPeopleCount" className="text-[#5D4E6D] font-playfair text-lg font-semibold flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  How many people in your group? *
+                </Label>
+                <div className="mt-3 flex items-center gap-4">
+                  <Input
+                    id="exactPeopleCount"
+                    name="exactPeopleCount"
+                    type="number"
+                    min="1"
+                    max="40"
+                    data-testid="booking-people-count-input"
+                    value={formData.exactPeopleCount}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Enter number of guests"
+                    className="text-lg py-6 border-[#D7C49E]/30 focus:border-[#5D4E6D] focus:ring-[#5D4E6D] max-w-[200px]"
+                  />
+                  <span className="text-[#6B8CBE] font-montserrat">guests</span>
+                </div>
+                {selectedTier && formData.exactPeopleCount && (
+                  <p className="text-[#8A9B68] font-montserrat text-sm mt-2">
+                    {formData.exactPeopleCount} people × ${selectedTier.pricePerPersonPerNight}/night = ${selectedTier.pricePerPersonPerNight * parseInt(formData.exactPeopleCount)}/night
+                  </p>
+                )}
+              </div>
+
+              {/* Selected Package Display */}
+              {selectedTier && formData.exactPeopleCount && (
+                <div className="bg-[#8A9B68]/10 rounded-xl p-4 border border-[#8A9B68]/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-playfair text-lg font-semibold text-[#5D4E6D]">{selectedTier.name}</h4>
+                      <p className="text-[#8A9B68] font-montserrat text-sm">{formData.exactPeopleCount} people • ${selectedTier.pricePerPersonPerNight}/person/night</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-playfair text-2xl font-bold text-[#B38E5D]">${basePrice.toLocaleString()}</p>
+                      <p className="text-[#6B8CBE] font-montserrat text-xs">Est. for {nights} nights</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Contact Information */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
