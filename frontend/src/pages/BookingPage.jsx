@@ -19,6 +19,7 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const BookingPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
