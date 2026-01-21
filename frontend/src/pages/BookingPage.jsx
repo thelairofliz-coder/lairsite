@@ -26,6 +26,7 @@ const BookingPage = () => {
     phone: '',
     groupType: '',
     groupSize: '',
+    exactPeopleCount: '',
     pricingTier: '',
     startDate: '',
     endDate: '',
@@ -39,10 +40,11 @@ const BookingPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAddOns, setShowAddOns] = useState(false);
 
-  // Calculate pricing based on selected tier
+  // Calculate pricing based on selected tier and exact people count
   const selectedTier = pricingTiers.find(t => t.name === formData.pricingTier);
   const nights = Math.max(2, formData.numberOfNights || 2);
-  const basePrice = selectedTier ? selectedTier.pricePerPersonPerNight * selectedTier.groupSize * nights : 0;
+  const peopleCount = parseInt(formData.exactPeopleCount) || (selectedTier ? selectedTier.groupSize : 0);
+  const basePrice = selectedTier ? selectedTier.pricePerPersonPerNight * peopleCount * nights : 0;
   const deposit = selectedTier ? selectedTier.deposit : 0;
 
   const handleInputChange = (e) => {
@@ -60,7 +62,19 @@ const BookingPage = () => {
     if (name === 'pricingTier') {
       const tier = pricingTiers.find(t => t.name === value);
       if (tier) {
-        setFormData(prev => ({ ...prev, groupSize: tier.groupSize.toString() }));
+        // For flexible tiers, don't auto-set the exact count
+        if (!tier.isFlexible) {
+          setFormData(prev => ({ 
+            ...prev, 
+            groupSize: tier.groupSize.toString(),
+            exactPeopleCount: tier.groupSize.toString()
+          }));
+        } else {
+          setFormData(prev => ({ 
+            ...prev, 
+            groupSize: tier.groupSize.toString()
+          }));
+        }
       }
     }
   };
