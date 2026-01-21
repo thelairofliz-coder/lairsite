@@ -132,7 +132,7 @@ async def create_status_check(input: StatusCheckCreate):
 
 @api_router.get("/status", response_model=List[StatusCheck])
 async def get_status_checks():
-    status_checks = await db.status_checks.find().to_list(1000)
+    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
 
@@ -154,7 +154,7 @@ async def create_booking(booking_data: BookingCreate):
 @api_router.get("/bookings", response_model=List[Booking])
 async def get_bookings():
     """Get all booking inquiries"""
-    bookings = await db.bookings.find().sort("created_at", -1).to_list(1000)
+    bookings = await db.bookings.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
     return [Booking(**booking) for booking in bookings]
 
 @api_router.get("/bookings/{booking_id}", response_model=Booking)
@@ -195,7 +195,7 @@ async def create_contact(contact_data: ContactCreate):
 @api_router.get("/contacts", response_model=List[Contact])
 async def get_contacts():
     """Get all contact messages"""
-    contacts = await db.contacts.find().sort("created_at", -1).to_list(1000)
+    contacts = await db.contacts.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
     return [Contact(**contact) for contact in contacts]
 
 @api_router.get("/contacts/{contact_id}", response_model=Contact)
@@ -223,7 +223,7 @@ async def update_contact_status(contact_id: str, status: str):
 @api_router.get("/reviews", response_model=List[Review])
 async def get_reviews():
     """Get all reviews"""
-    reviews = await db.reviews.find().sort("created_at", -1).to_list(100)
+    reviews = await db.reviews.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
     return [Review(**review) for review in reviews]
 
 
