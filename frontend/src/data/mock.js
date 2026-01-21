@@ -1,58 +1,195 @@
-// Mock Data for The Lair of Liz - Spiritual Campground Retreat
+// Data for The Lair of Liz - An Elevated Rustic Sanctuary for Spiritual Gatherings
 
 export const siteInfo = {
   name: "The Lair of Liz",
-  tagline: "A Spiritual Retreat for All",
-  subTagline: "An exclusive 12-acre sanctuary where every group—and every RV—is welcome. Create your own sacred gathering in nature.",
+  tagline: "An Elevated Rustic Sanctuary",
+  subTagline: "A private and personally curated sanctuary on a working farm, designed exclusively for your group's retreat. Experience connection and renewal in nature.",
   phone: "231-287-7821",
   email: "thelairofliz@gmail.com",
   address: "8732 E 72nd St, Chase MI, 49623",
-  ownerName: "Elizabeth Towne"
+  ownerName: "Elizabeth Towne",
+  location: "Chase, MI"
 };
 
 // Development notice
 export const developmentNotice = {
   title: "Growing Together",
-  message: "Our sanctuary is in its early developmental stages, and we're excited to grow with our community! Coming soon: a large community cooking area and upgraded restroom facilities. Join us on this journey as we create something beautiful together."
+  message: "Our sanctuary is in its early developmental stages, and we're excited to grow with our community! Coming within the next year: a large community cooking area and upgraded outhouse/waste systems. Join us on this journey as we create something beautiful together."
 };
 
-// Group-based packages
-export const packages = [
+// Core Retreat Pricing - Per person, per night (2-night minimum)
+export const pricingTiers = [
   {
     id: 1,
-    name: "Intimate Gathering",
-    groupSize: "Up to 10 guests",
-    duration: "3 nights",
-    weekendPrice: 800,
-    weekdayPrice: 600,
-    description: "Perfect for small spiritual circles, family getaways, or intimate friend groups"
+    name: "The Intimate Pod",
+    groupSize: 10,
+    pricePerPersonPerNight: 33,
+    totalWeekend: 660,
+    idealFor: "Small circles, mastermind retreats, deep personal work",
+    deposit: 200
   },
   {
     id: 2,
-    name: "Community Circle",
-    groupSize: "11-20 guests",
-    duration: "3 nights",
-    weekendPrice: 1400,
-    weekdayPrice: 1100,
-    description: "Ideal for yoga retreats, women's circles, or medium-sized family reunions"
+    name: "The Gathering",
+    groupSize: 20,
+    pricePerPersonPerNight: 30,
+    totalWeekend: 1200,
+    idealFor: "Wellness workshops, spiritual groups, community retreats",
+    deposit: 300
   },
   {
     id: 3,
-    name: "Large Gathering",
-    groupSize: "21-30 guests",
-    duration: "3 nights",
-    weekendPrice: 1900,
-    weekdayPrice: 1500,
-    description: "Great for workshops, wedding parties, or community celebrations"
+    name: "The Council",
+    groupSize: 30,
+    pricePerPersonPerNight: 28,
+    totalWeekend: 1680,
+    idealFor: "Larger communities, multi-day seminars, extended gatherings",
+    deposit: 400
   },
   {
     id: 4,
-    name: "Grand Retreat",
-    groupSize: "31-40 guests",
-    duration: "3 nights",
-    weekendPrice: 2400,
-    weekdayPrice: 1900,
-    description: "Our largest package for major events, festivals, or large group retreats"
+    name: "The Full Circle",
+    groupSize: 40,
+    pricePerPersonPerNight: 27,
+    totalWeekend: 2160,
+    idealFor: "Maximum capacity events, transformational immersions, large group ceremonies",
+    deposit: 500
+  }
+];
+
+// What's Included
+export const whatsIncluded = [
+  {
+    id: 1,
+    title: "Complete Sanctuary Privacy",
+    description: "Exclusive booking of the entire Lair property",
+    icon: "Shield"
+  },
+  {
+    id: 2,
+    title: "Prepared & Intentional Camping Sites",
+    description: "Cleared, level areas spaced for energy flow and privacy",
+    icon: "Tent"
+  },
+  {
+    id: 3,
+    title: "Sanitation Facilities",
+    description: "Serviced, clean portable toilets and handwashing stations",
+    icon: "Bath"
+  },
+  {
+    id: 4,
+    title: "The Heart Fire",
+    description: "A dedicated, pre-laid fire ring per camping pod",
+    icon: "Flame"
+  },
+  {
+    id: 5,
+    title: "Grounding Welcome",
+    description: "One generous bundle of seasoned firewood per group, per night",
+    icon: "TreePine"
+  },
+  {
+    id: 6,
+    title: "Personal Welcome",
+    description: "A detailed digital guide and an on-site orientation with Liz",
+    icon: "Heart"
+  },
+  {
+    id: 7,
+    title: "Peace of Mind",
+    description: "Comprehensive liability insurance for your stay",
+    icon: "ShieldCheck"
+  }
+];
+
+// Add-Ons: Farm & Nourishment Experiences
+export const farmExperiences = [
+  {
+    id: 1,
+    name: "Farmstead Breakfast",
+    subtitle: "Rustic Meal",
+    price: 15,
+    priceType: "per person",
+    description: "Liz prepares and serves a hearty, simple breakfast. Think farm-fresh scrambled eggs (when available), rustic potatoes, toast, and locally sourced coffee. Served in the communal area.",
+    note: "Select morning, 24-hour notice required",
+    icon: "Coffee"
+  },
+  {
+    id: 2,
+    name: "Harvest Hearth",
+    subtitle: "Rustic Dinner",
+    price: 22,
+    priceType: "per person",
+    description: "A nourishing end to the day. A one-pot wonder or grilled fare featuring local produce, served with a side and bread. Prepared and served by Liz over the open fire or camp stove.",
+    note: "Select evening, 48-hour notice required",
+    icon: "UtensilsCrossed"
+  },
+  {
+    id: 3,
+    name: "Garden Walk & Gather",
+    price: 50,
+    priceType: "per group",
+    description: "A guided walk through the farm's growing spaces with Liz. Learn basic harvesting tips and gather a modest, seasonal bounty of fresh produce (e.g., herbs, greens, tomatoes) for your group to enjoy.",
+    duration: "~45 minutes",
+    icon: "Sprout"
+  }
+];
+
+// Add-Ons: Comfort & Convenience Upgrades
+export const comfortUpgrades = [
+  {
+    id: 1,
+    name: "The Base Camp Teepee",
+    price: 125,
+    priceType: "per stay",
+    description: "Our large, furnished teepee serves as your group's dry, dedicated gathering space. Includes battery-powered string lighting, floor rugs, and cushions for 10-12 people. A guaranteed retreat from weather.",
+    icon: "Home"
+  },
+  {
+    id: 2,
+    name: "Power Station Access",
+    price: 40,
+    priceType: "per day",
+    description: "Generator-powered charging station available for 3 hours each evening (e.g., 6-9 PM). Safely charge phones, small speakers, or medical devices.",
+    note: "Fuel & setup included",
+    icon: "Zap"
+  },
+  {
+    id: 3,
+    name: "Extra Shelter Pods",
+    price: 75,
+    priceType: "per small tent, per stay",
+    description: "Additional 4-6 person weatherproof tents with basic interior lighting, pre-set for those who prefer not to pitch their own.",
+    icon: "Tent"
+  }
+];
+
+// Add-Ons: Professional Support
+export const professionalSupport = [
+  {
+    id: 1,
+    name: "Guest Facilitator Liaison & Walk-Through",
+    price: 150,
+    priceType: "flat fee",
+    description: "For groups bringing an outside facilitator (yoga teacher, chef, etc.). Liz handles all pre-arrival coordination and provides a dedicated, in-depth site orientation for your facilitator to ensure their needs for space, sound, and setup are perfectly met.",
+    icon: "Users"
+  }
+];
+
+// Cancellation Policy
+export const cancellationPolicy = [
+  {
+    timeframe: "> 60 days prior",
+    policy: "Deposit may be applied to a future booking within one year"
+  },
+  {
+    timeframe: "30-60 days prior",
+    policy: "50% of total booking fee is forfeited"
+  },
+  {
+    timeframe: "< 30 days prior",
+    policy: "100% of total booking fee is forfeited"
   }
 ];
 
@@ -91,7 +228,7 @@ export const classes = [
 // Venue rental info
 export const venueRental = {
   title: "Venue for Your Vision",
-  description: "Are you a yoga instructor, wellness practitioner, or event organizer looking for a unique natural venue? We partner with businesses and individuals to provide the perfect setting for your offerings. Host your retreats, workshops, classes, or special events on our beautiful 12-acre sanctuary.",
+  description: "Are you a yoga instructor, wellness practitioner, or event organizer looking for a unique natural venue? We partner with businesses and individuals to provide the perfect setting for your offerings. Host your retreats, workshops, classes, or special events on our beautiful sanctuary.",
   features: [
     "Flexible scheduling & package options",
     "Work with your existing group or help you promote",
@@ -149,13 +286,13 @@ export const comingSoon = [
     id: 1,
     name: "Community Kitchen",
     description: "A large covered cooking area for group meals and gatherings",
-    timeline: "Coming 2026"
+    timeline: "Coming within the next year"
   },
   {
     id: 2,
     name: "Upgraded Restrooms",
-    description: "Modern, comfortable restroom facilities",
-    timeline: "Coming 2026"
+    description: "Improved outhouse/waste systems for better comfort",
+    timeline: "Coming within the next year"
   },
   {
     id: 3,
@@ -193,7 +330,7 @@ export const groupTypes = [
   "Other"
 ];
 
-// Real property photos
+// Property photos - User's actual property images with curated camping scenes
 export const propertyPhotos = [
   {
     id: 1,
@@ -219,20 +356,40 @@ export const propertyPhotos = [
     alt: "Wild blackberry bushes on the property",
     category: "The Land"
   },
+  // New user-provided images with camping scenes
   {
-    id: 9,
+    id: 5,
+    url: "https://customer-assets.emergentagent.com/job_woodland-retreat-1/artifacts/oubq6zsh_ChatGPT%20camp3.png",
+    alt: "Family camping with tent and campfire in the woods",
+    category: "Groups in Action"
+  },
+  {
+    id: 6,
+    url: "https://customer-assets.emergentagent.com/job_woodland-retreat-1/artifacts/us7e1liq_ChatGPT%20Image%20Jan%2019%2C%202026%2C%20wyyy.png",
+    alt: "Friends gathered around campfire at sunset",
+    category: "Groups in Action"
+  },
+  {
+    id: 7,
+    url: "https://customer-assets.emergentagent.com/job_woodland-retreat-1/artifacts/yjome407_ChatGPT%20Image%20Jan%2019%2C%201201.png",
+    alt: "Large group gathering around evening campfire",
+    category: "Groups in Action"
+  },
+  // Previous user-provided images
+  {
+    id: 8,
     url: "https://customer-assets.emergentagent.com/job_spiritual-sanctuary/artifacts/2pzv2kdh_ChatGPT%20Image%20Jan%2019%2C%202026%2C%2012_27_50%20PM.png",
     alt: "Community gathering around campfire",
     category: "Groups in Action"
   },
   {
-    id: 10,
+    id: 9,
     url: "https://customer-assets.emergentagent.com/job_spiritual-sanctuary/artifacts/hl4gzmhl_ChatGPT%20Image%20Jan%2019%2C%202026%2C%20wyyy.png",
     alt: "Friends enjoying the campsite",
     category: "Groups in Action"
   },
   {
-    id: 11,
+    id: 10,
     url: "https://customer-assets.emergentagent.com/job_spiritual-sanctuary/artifacts/ejuhoaos_ChatGPT%20Image%20Jan%2019%2C%202026%2C%2011_06_40%20AM.png",
     alt: "Campsite with string lights",
     category: "Ceremonial Spaces"
@@ -242,25 +399,25 @@ export const propertyPhotos = [
 // Stock photos for atmosphere
 export const atmospherePhotos = [
   {
-    id: 5,
+    id: 11,
     url: "https://images.unsplash.com/photo-1651522986586-181f9b3c5fe2?w=800",
     alt: "Community gathered around campfire",
     category: "Groups in Action"
   },
   {
-    id: 6,
+    id: 12,
     url: "https://images.unsplash.com/photo-1593976243570-64e54b3c42b8?w=800",
     alt: "Evening community gathering",
     category: "Groups in Action"
   },
   {
-    id: 7,
+    id: 13,
     url: "https://images.unsplash.com/photo-1660590763018-9730ab97a0bb?w=800",
     alt: "Atmospheric campfire at dusk",
     category: "Ceremonial Spaces"
   },
   {
-    id: 8,
+    id: 14,
     url: "https://images.pexels.com/photos/7149146/pexels-photo-7149146.jpeg?w=800",
     alt: "Bohemian camping setup",
     category: "RV Love"
@@ -270,3 +427,6 @@ export const atmospherePhotos = [
 export const allGalleryPhotos = [...propertyPhotos, ...atmospherePhotos];
 
 export const galleryCategories = ["All", "The Land", "Groups in Action", "Ceremonial Spaces", "RV Love"];
+
+// Note from Liz
+export const noteFromLiz = "This structure allows me to share my home, my skills, and this land sustainably. The add-ons are born from what I can genuinely and personally provide—a warm meal, a dry space, a lesson from the garden, or a reliable power source. It's all about making your group's time here both seamless and deeply connected.";
