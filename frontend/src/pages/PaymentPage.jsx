@@ -381,7 +381,7 @@ const PaymentPage = () => {
                     </div>
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-[#8A9B68] font-montserrat">
-                        {selectedTier.groupSize} people × ${selectedTier.pricePerPersonPerNight}/night × {nights} nights
+                        {peopleCount} people × ${selectedTier.pricePerPersonPerNight}/night × {nights} nights
                       </span>
                     </div>
                   </div>
