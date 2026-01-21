@@ -17,6 +17,7 @@ A comprehensive website for The Lair of Liz, an elevated rustic sanctuary locate
 ### 1. Pricing Structure (Per Person/Per Night, 2-Night Minimum)
 | Tier | Group Size | Price/Person/Night | 2-Night Total | Deposit |
 |------|------------|-------------------|---------------|---------|
+| Small Group Escape | 1-5 (flexible) | $50 | $500 (max) | $100 |
 | The Intimate Pod | 10 | $33 | $660 | $200 |
 | The Gathering | 20 | $30 | $1,200 | $300 |
 | The Council | 30 | $28 | $1,680 | $400 |
