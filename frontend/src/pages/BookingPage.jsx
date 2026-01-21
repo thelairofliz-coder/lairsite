@@ -37,7 +37,6 @@ const BookingPage = () => {
     bringingFacilitator: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [showAddOns, setShowAddOns] = useState(false);
 
   // Calculate pricing based on selected tier
