@@ -114,15 +114,17 @@ const HomePage = () => {
             <h2 className="font-playfair text-3xl md:text-4xl font-bold text-[#5D4E6D] mt-4">
               Pricing Starting at $27/person/night
             </h2>
-            <p className="text-[#6B8CBE] font-montserrat mt-3">2-night minimum • Groups of 10-40 people</p>
+            <p className="text-[#6B8CBE] font-montserrat mt-3">2-night minimum • Groups of 1-40 people</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
             {pricingTiers.map((tier) => (
               <div key={tier.id} className="bg-[#F8F5F2] rounded-xl p-4 text-center hover:shadow-md transition-all duration-300">
-                <p className="font-montserrat text-sm text-[#8A9B68] mb-1">{tier.groupSize} People</p>
-                <p className="font-playfair text-lg font-semibold text-[#5D4E6D]">{tier.name}</p>
-                <p className="font-playfair text-2xl font-bold text-[#B38E5D]">${tier.pricePerPersonPerNight}</p>
+                <p className="font-montserrat text-xs text-[#8A9B68] mb-1">
+                  {tier.isFlexible ? `1-${tier.groupSize}` : tier.groupSize} People
+                </p>
+                <p className="font-playfair text-sm font-semibold text-[#5D4E6D]">{tier.name}</p>
+                <p className="font-playfair text-xl font-bold text-[#B38E5D]">${tier.pricePerPersonPerNight}</p>
                 <p className="font-montserrat text-xs text-[#6B8CBE]">per person/night</p>
               </div>
             ))}
