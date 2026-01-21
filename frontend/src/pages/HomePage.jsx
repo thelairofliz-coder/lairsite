@@ -186,13 +186,13 @@ const HomePage = () => {
             <div className="order-2 lg:order-1">
               <span className="text-[#8A9B68] font-montserrat text-sm tracking-widest uppercase">Our Sanctuary</span>
               <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#5D4E6D] mt-4 mb-6">
-                A Working Farm Sanctuary
+                Deep in the Manistee National Forest
               </h2>
               <p className="text-[#6B8CBE] font-montserrat text-lg leading-relaxed mb-6">
-                Nestled in the heart of Michigan's woodlands, The Lair of Liz offers a personally curated sanctuary on a working farm. Whether you're seeking spiritual connection, family bonding, or simply an escape from the ordinary.
+                Tucked away in the heart of Michigan's magnificent Manistee National Forest, The Lair of Liz offers a truly immersive nature experience. Surrounded by towering trees and pristine wilderness, our sanctuary provides the perfect backdrop for spiritual connection, family bonding, or simply an escape from the ordinary.
               </p>
               <p className="text-[#6B8CBE] font-montserrat leading-relaxed mb-8">
-                Our land welcomes all—from yoga retreats to family reunions, from intimate ceremonies to large group gatherings. Here, you're free to be authentically you.
+                Our land welcomes all—from yoga retreats to family reunions, from intimate ceremonies to large group gatherings. Here, among the trees, you're free to be authentically you.
               </p>
               <Link to="/about">
                 <Button className="bg-[#8A9B68] hover:bg-[#5D4E6D] text-white font-montserrat font-medium px-8 py-4 rounded-full transition-all duration-300 flex items-center gap-2">
@@ -210,12 +210,12 @@ const HomePage = () => {
                 />
                 <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-[#B38E5D]/20 rounded-full flex items-center justify-center">
-                      <Trees className="w-6 h-6 text-[#B38E5D]" />
+                    <div className="w-12 h-12 bg-[#8A9B68]/20 rounded-full flex items-center justify-center">
+                      <Trees className="w-6 h-6 text-[#8A9B68]" />
                     </div>
                     <div>
-                      <p className="font-playfair text-2xl font-bold text-[#5D4E6D]">Up to 40</p>
-                      <p className="font-montserrat text-sm text-[#8A9B68]">Guests Welcome</p>
+                      <p className="font-playfair text-lg font-bold text-[#5D4E6D]">Manistee</p>
+                      <p className="font-montserrat text-sm text-[#8A9B68]">National Forest</p>
                     </div>
                   </div>
                 </div>
