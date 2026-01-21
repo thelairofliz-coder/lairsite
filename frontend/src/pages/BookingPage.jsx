@@ -80,25 +80,38 @@ const BookingPage = () => {
     setIsSubmitting(true);
 
     try {
+      const bookingPayload = {
+        ...formData,
+        estimatedTotal: basePrice,
+        deposit: deposit
+      };
+
       const response = await fetch(`${BACKEND_URL}/api/bookings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          estimatedTotal: basePrice,
-          deposit: deposit
-        })
+        body: JSON.stringify(bookingPayload)
       });
 
       if (response.ok) {
-        setSubmitted(true);
-        toast.success('Booking inquiry submitted! We\'ll be in touch soon.');
+        const bookingData = await response.json();
+        toast.success('Booking inquiry submitted! Redirecting to payment...');
+        
+        // Redirect to payment page with booking data
+        setTimeout(() => {
+          navigate('/payment', { 
+            state: { 
+              bookingData: {
+                ...bookingPayload,
+                id: bookingData.id
+              }
+            }
+          });
+        }, 1000);
       } else {
         throw new Error('Submission failed');
       }
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
-    } finally {
       setIsSubmitting(false);
     }
   };
