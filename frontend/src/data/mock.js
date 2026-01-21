@@ -173,6 +173,7 @@ export const professionalSupport = [
     price: 150,
     priceType: "flat fee",
     description: "For groups bringing an outside facilitator (yoga teacher, chef, etc.). Liz handles all pre-arrival coordination and provides a dedicated, in-depth site orientation for your facilitator to ensure their needs for space, sound, and setup are perfectly met.",
+    timing: "Must be scheduled 7 days to 3 months prior to your visit",
     icon: "Users"
   }
 ];
