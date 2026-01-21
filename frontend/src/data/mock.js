@@ -3,18 +3,18 @@
 export const siteInfo = {
   name: "The Lair of Liz",
   tagline: "An Elevated Rustic Sanctuary",
-  subTagline: "A private and personally curated sanctuary on a working farm, designed exclusively for your group's retreat. Experience connection and renewal in nature.",
+  subTagline: "A private and personally curated sanctuary nestled in the heart of the Manistee National Forest, designed exclusively for your group's retreat. Experience connection and renewal surrounded by towering trees and pristine wilderness.",
   phone: "231-287-7821",
   email: "thelairofliz@gmail.com",
   address: "8732 E 72nd St, Chase MI, 49623",
   ownerName: "Elizabeth Towne",
-  location: "Chase, MI"
+  location: "Chase, MI • Manistee National Forest"
 };
 
 // Development notice
 export const developmentNotice = {
   title: "Growing Together",
-  message: "Our sanctuary is in its early developmental stages, and we're excited to grow with our community! Coming within the next year: a large community cooking area and upgraded outhouse/waste systems. Join us on this journey as we create something beautiful together."
+  message: "Our sanctuary is in its early developmental stages, and we're excited to grow with our community! Nestled deep within the Manistee National Forest, surrounded by towering trees and natural beauty. Coming within the next year: a large community cooking area and upgraded outhouse/waste systems. Join us on this journey as we create something beautiful together."
 };
 
 // Core Retreat Pricing - Per person, per night (2-night minimum)
