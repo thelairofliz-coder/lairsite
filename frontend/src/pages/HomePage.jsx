@@ -1,18 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Star, Feather, Moon, Trees, Users, Flame, Sparkles } from 'lucide-react';
+import { ArrowRight, Star, Feather, Moon, Trees, Users, Flame, Sparkles, Baby, Dog, Leaf, Construction } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { siteInfo, reviews, values, amenities, propertyPhotos } from '../data/mock';
+import { siteInfo, reviews, values, amenities, propertyPhotos, developmentNotice, pricingTiers } from '../data/mock';
 
 const HomePage = () => {
   return (
     <div className="bg-[#F8F5F2]">
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-        {/* Background with overlay */}
+        {/* Background with overlay - using new camping image */}
         <div className="absolute inset-0">
           <img
-            src={propertyPhotos[1].url}
+            src={propertyPhotos[6]?.url || propertyPhotos[1].url}
             alt="The Lair of Liz sanctuary"
             className="w-full h-full object-cover"
           />
@@ -36,16 +36,39 @@ const HomePage = () => {
                 Welcome to
               </span>
             </div>
-            <h1 className="font-playfair text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              {siteInfo.tagline}
+            <h1 className="font-playfair text-5xl md:text-7xl font-bold text-white mb-4 leading-tight">
+              {siteInfo.name}
             </h1>
-            <p className="text-xl text-[#D7C49E] font-montserrat leading-relaxed mb-8">
+            <p className="text-2xl text-[#D7C49E] font-playfair mb-4">
+              {siteInfo.tagline}
+            </p>
+            <p className="text-lg text-white/80 font-montserrat leading-relaxed mb-6">
               {siteInfo.subTagline}
             </p>
+            
+            {/* Kid & Pet Friendly Badges */}
+            <div className="flex flex-wrap gap-3 mb-8">
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                <Baby className="w-4 h-4 text-[#D7C49E]" />
+                <span className="text-white font-montserrat text-sm">Kid-Friendly</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                <Dog className="w-4 h-4 text-[#D7C49E]" />
+                <span className="text-white font-montserrat text-sm">Pet-Friendly</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                <Leaf className="w-4 h-4 text-[#8A9B68]" />
+                <span className="text-white font-montserrat text-sm">Working Farm</span>
+              </div>
+            </div>
+
             <div className="flex flex-wrap gap-4">
-              <Link to="/booking">
-                <Button className="bg-[#B38E5D] hover:bg-[#D7C49E] hover:text-[#5D4E6D] text-white font-montserrat font-semibold px-8 py-6 rounded-full text-lg transition-all duration-300 hover:scale-105 flex items-center gap-2">
-                  Begin Your Journey
+              <Link to="/pricing">
+                <Button 
+                  data-testid="view-pricing-btn"
+                  className="bg-[#B38E5D] hover:bg-[#D7C49E] hover:text-[#5D4E6D] text-white font-montserrat font-semibold px-8 py-6 rounded-full text-lg transition-all duration-300 hover:scale-105 flex items-center gap-2"
+                >
+                  View Pricing & Packages
                   <ArrowRight className="w-5 h-5" />
                 </Button>
               </Link>
@@ -66,9 +89,62 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Development Notice Banner */}
+      <section className="py-8 bg-[#8A9B68]/20 border-y border-[#8A9B68]/30">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-full bg-[#8A9B68]/20 flex items-center justify-center flex-shrink-0">
+              <Construction className="w-6 h-6 text-[#8A9B68]" />
+            </div>
+            <div>
+              <h3 className="font-playfair text-xl font-semibold text-[#5D4E6D] mb-2">{developmentNotice.title}</h3>
+              <p className="text-[#6B8CBE] font-montserrat leading-relaxed">
+                {developmentNotice.message}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Pricing Preview */}
+      <section className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <span className="text-[#8A9B68] font-montserrat text-sm tracking-widest uppercase">Private Group Retreats</span>
+            <h2 className="font-playfair text-3xl md:text-4xl font-bold text-[#5D4E6D] mt-4">
+              Pricing Starting at $27/person/night
+            </h2>
+            <p className="text-[#6B8CBE] font-montserrat mt-3">2-night minimum • Groups of 10-40 people</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            {pricingTiers.map((tier) => (
+              <div key={tier.id} className="bg-[#F8F5F2] rounded-xl p-4 text-center hover:shadow-md transition-all duration-300">
+                <p className="font-montserrat text-sm text-[#8A9B68] mb-1">{tier.groupSize} People</p>
+                <p className="font-playfair text-lg font-semibold text-[#5D4E6D]">{tier.name}</p>
+                <p className="font-playfair text-2xl font-bold text-[#B38E5D]">${tier.pricePerPersonPerNight}</p>
+                <p className="font-montserrat text-xs text-[#6B8CBE]">per person/night</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link to="/pricing">
+              <Button 
+                data-testid="full-pricing-btn"
+                className="bg-[#5D4E6D] hover:bg-[#B38E5D] text-white font-montserrat font-medium px-8 py-4 rounded-full transition-all duration-300 flex items-center gap-2 mx-auto"
+              >
+                View Full Pricing & What's Included
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Values Section */}
       <section className="py-24 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#5D4E6D]/10 to-transparent" />
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white to-transparent" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -110,13 +186,13 @@ const HomePage = () => {
             <div className="order-2 lg:order-1">
               <span className="text-[#8A9B68] font-montserrat text-sm tracking-widest uppercase">Our Sanctuary</span>
               <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#5D4E6D] mt-4 mb-6">
-                12 Acres of Pure Magic
+                A Working Farm Sanctuary
               </h2>
               <p className="text-[#6B8CBE] font-montserrat text-lg leading-relaxed mb-6">
-                Nestled in the heart of Michigan's woodlands, The Lair of Liz offers a blank canvas for your unique gathering. Whether you're seeking spiritual connection, family bonding, or simply an escape from the ordinary.
+                Nestled in the heart of Michigan's woodlands, The Lair of Liz offers a personally curated sanctuary on a working farm. Whether you're seeking spiritual connection, family bonding, or simply an escape from the ordinary.
               </p>
               <p className="text-[#6B8CBE] font-montserrat leading-relaxed mb-8">
-                Our land welcomes all—from vintage RVs to modern campers, from intimate ceremonies to joyful reunions. Here, you're free to be authentically you.
+                Our land welcomes all—from yoga retreats to family reunions, from intimate ceremonies to large group gatherings. Here, you're free to be authentically you.
               </p>
               <Link to="/about">
                 <Button className="bg-[#8A9B68] hover:bg-[#5D4E6D] text-white font-montserrat font-medium px-8 py-4 rounded-full transition-all duration-300 flex items-center gap-2">
@@ -128,8 +204,8 @@ const HomePage = () => {
             <div className="order-1 lg:order-2">
               <div className="relative">
                 <img
-                  src={propertyPhotos[0].url}
-                  alt="The Lair of Liz grounds"
+                  src={propertyPhotos[4]?.url || propertyPhotos[0].url}
+                  alt="Family camping at The Lair of Liz"
                   className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
                 />
                 <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl">
@@ -138,8 +214,8 @@ const HomePage = () => {
                       <Trees className="w-6 h-6 text-[#B38E5D]" />
                     </div>
                     <div>
-                      <p className="font-playfair text-2xl font-bold text-[#5D4E6D]">12</p>
-                      <p className="font-montserrat text-sm text-[#8A9B68]">Acres of Peace</p>
+                      <p className="font-playfair text-2xl font-bold text-[#5D4E6D]">Up to 40</p>
+                      <p className="font-montserrat text-sm text-[#8A9B68]">Guests Welcome</p>
                     </div>
                   </div>
                 </div>
@@ -160,8 +236,8 @@ const HomePage = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {amenities.slice(0, 4).map((amenity) => {
-              const IconComponent = { Flame, Trees, Star: Sparkles, Sparkles }[amenity.icon] || Sparkles;
+            {amenities.slice(0, 8).map((amenity) => {
+              const IconComponent = { Flame, Trees, Star: Sparkles, Sparkles, Baby, Dog }[amenity.icon] || Sparkles;
               return (
                 <div key={amenity.id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 text-center group">
                   <div className="w-14 h-14 rounded-full bg-[#D7C49E]/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-[#5D4E6D] transition-colors duration-300">
@@ -178,6 +254,39 @@ const HomePage = () => {
             <Link to="/amenities">
               <Button variant="outline" className="border-2 border-[#5D4E6D] text-[#5D4E6D] hover:bg-[#5D4E6D] hover:text-white font-montserrat font-medium px-8 py-4 rounded-full transition-all duration-300">
                 View All Amenities
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Photo Gallery Preview */}
+      <section className="py-24 bg-[#5D4E6D]/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="text-[#8A9B68] font-montserrat text-sm tracking-widest uppercase">See The Land</span>
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#5D4E6D] mt-4">
+              Your Retreat Awaits
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {propertyPhotos.slice(0, 6).map((photo) => (
+              <div key={photo.id} className="relative rounded-xl overflow-hidden group aspect-[4/3]">
+                <img 
+                  src={photo.url} 
+                  alt={photo.alt} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#5D4E6D]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link to="/gallery">
+              <Button className="bg-[#5D4E6D] hover:bg-[#B38E5D] text-white font-montserrat font-medium px-8 py-4 rounded-full transition-all duration-300">
+                View Full Gallery
               </Button>
             </Link>
           </div>
@@ -233,15 +342,18 @@ const HomePage = () => {
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Moon className="w-12 h-12 text-[#5D4E6D] mx-auto mb-6" />
           <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#5D4E6D] mb-6">
-            Ready to Create Your Sacred Gathering?
+            Ready to Book Your Sanctuary?
           </h2>
           <p className="text-[#6B8CBE] font-montserrat text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
-            Whether it's a weekend retreat or a weekday escape, your journey to connection begins here. Let us help you create memories that will last a lifetime.
+            Availability for curated retreats at The Lair is limited. Contact us to check dates, discuss meal plans, and begin planning your group's immersive farmstead experience.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/booking">
-              <Button className="bg-[#5D4E6D] hover:bg-[#B38E5D] text-white font-montserrat font-semibold px-10 py-6 rounded-full text-lg transition-all duration-300 hover:scale-105 flex items-center gap-2">
-                Book Now
+              <Button 
+                data-testid="book-now-btn"
+                className="bg-[#5D4E6D] hover:bg-[#B38E5D] text-white font-montserrat font-semibold px-10 py-6 rounded-full text-lg transition-all duration-300 hover:scale-105 flex items-center gap-2"
+              >
+                Inquire for Availability
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
