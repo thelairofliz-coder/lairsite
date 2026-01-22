@@ -10,6 +10,9 @@ from typing import List, Optional
 import uuid
 from datetime import datetime
 
+# Setup logging first
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -21,8 +24,9 @@ db_name = os.environ.get('DB_NAME', 'lair_of_liz')
 try:
     client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=5000)
     db = client[db_name]
+    logger.info(f"MongoDB connected to {db_name}")
 except Exception as e:
-    logging.error(f"MongoDB connection error: {e}")
+    logger.error(f"MongoDB connection error: {e}")
     client = None
     db = None
 
