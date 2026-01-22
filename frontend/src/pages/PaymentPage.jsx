@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, useLocation, Link } from 'react-router-dom';
 import { CreditCard, Check, Shield, ArrowRight, Feather, AlertCircle, Users, Smartphone } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { siteInfo, pricingTiers } from '../data/mock';
+import { pricingTiers } from '../data/mock';
 
-const PAYPAL_CLIENT_ID = process.env.REACT_APP_PAYPAL_CLIENT_ID || 'LMQB7GDA9RQ3L';
+const PAYPAL_CLIENT_ID = process.env.REACT_APP_PAYPAL_CLIENT_ID || 'ATLlnBcI9Kbs1hyLsTonXhrik7VD2gMJQIYH3BdmHiv0GfMdLgkdvPXVa5VQB8Ziga2uOFig4m6wsy4m';
 
 const PaymentPage = () => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const bookingData = location.state?.bookingData || null;
   
-  const [paymentStatus, setPaymentStatus] = useState('pending'); // pending, processing, success, error
+  const [paymentStatus, setPaymentStatus] = useState('pending');
   const [selectedTier, setSelectedTier] = useState(
     bookingData?.pricingTier 
       ? pricingTiers.find(t => t.name === bookingData.pricingTier) || pricingTiers[0]
@@ -23,72 +23,114 @@ const PaymentPage = () => {
       ? parseInt(bookingData.exactPeopleCount) 
       : (selectedTier?.groupSize || 2)
   );
-  const [paymentType, setPaymentType] = useState('deposit'); // 'deposit' or 'full'
+  const [paymentType, setPaymentType] = useState('deposit');
+  const [sdkReady, setSdkReady] = useState(false);
+  
+  const paypalButtonsRef = useRef(null);
+  const paypalContainerRef = useRef(null);
 
-  // Calculate totals based on actual people count
+  // Calculate totals
   const totalPrice = selectedTier.pricePerPersonPerNight * peopleCount * nights;
   const depositAmount = selectedTier.deposit;
   const amountToPay = paymentType === 'deposit' ? depositAmount : totalPrice;
 
+  // Load PayPal SDK once
   useEffect(() => {
-    // Load PayPal SDK with Venmo enabled
+    if (window.paypal) {
+      setSdkReady(true);
+      return;
+    }
+
     const existingScript = document.querySelector('script[src*="paypal.com/sdk"]');
     if (existingScript) {
-      existingScript.remove();
+      existingScript.addEventListener('load', () => setSdkReady(true));
+      return;
     }
 
     const script = document.createElement('script');
-    // Enable Venmo funding source
     script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD&enable-funding=venmo`;
     script.async = true;
-    script.onload = () => {
-      if (window.paypal) {
-        // Clear existing buttons
-        const container = document.getElementById('paypal-button-container');
-        if (container) {
-          container.innerHTML = '';
-        }
-        
-        window.paypal.Buttons({
-          style: {
-            layout: 'vertical',
-            color: 'blue',
-            shape: 'pill',
-            label: 'pay'
-          },
-          createOrder: (data, actions) => {
-            return actions.order.create({
-              purchase_units: [{
-                description: `${selectedTier.name} - ${paymentType === 'deposit' ? 'Deposit' : 'Full Payment'} - The Lair of Liz`,
-                amount: {
-                  value: amountToPay.toString()
-                },
-                custom_id: bookingData?.id || 'direct-payment'
-              }]
-            });
-          },
-          onApprove: async (data, actions) => {
-            setPaymentStatus('processing');
-            const order = await actions.order.capture();
-            console.log('Payment successful:', order);
-            setPaymentStatus('success');
-          },
-          onError: (err) => {
-            console.error('PayPal error:', err);
-            setPaymentStatus('error');
-          }
-        }).render('#paypal-button-container');
-      }
-    };
+    script.onload = () => setSdkReady(true);
+    script.onerror = () => console.error('PayPal SDK failed to load');
     document.body.appendChild(script);
 
     return () => {
-      const scriptToRemove = document.querySelector('script[src*="paypal.com/sdk"]');
-      if (scriptToRemove) {
-        scriptToRemove.remove();
+      // Don't remove script on unmount - let it stay loaded
+    };
+  }, []);
+
+  // Render PayPal buttons when SDK is ready and values change
+  useEffect(() => {
+    if (!sdkReady || !window.paypal || !paypalContainerRef.current) return;
+
+    // Close existing buttons if any
+    if (paypalButtonsRef.current) {
+      try {
+        paypalButtonsRef.current.close();
+      } catch (e) {
+        // Ignore close errors
+      }
+    }
+
+    // Clear container
+    paypalContainerRef.current.innerHTML = '';
+
+    // Create new buttons
+    const buttons = window.paypal.Buttons({
+      style: {
+        layout: 'vertical',
+        color: 'blue',
+        shape: 'pill',
+        label: 'pay'
+      },
+      createOrder: (data, actions) => {
+        return actions.order.create({
+          purchase_units: [{
+            description: `${selectedTier.name} - ${paymentType === 'deposit' ? 'Deposit' : 'Full Payment'} - The Lair of Liz`,
+            amount: {
+              value: amountToPay.toString()
+            },
+            custom_id: bookingData?.id || 'direct-payment'
+          }]
+        });
+      },
+      onApprove: async (data, actions) => {
+        setPaymentStatus('processing');
+        try {
+          const order = await actions.order.capture();
+          console.log('Payment successful:', order);
+          setPaymentStatus('success');
+        } catch (err) {
+          console.error('Capture error:', err);
+          setPaymentStatus('error');
+        }
+      },
+      onError: (err) => {
+        console.error('PayPal error:', err);
+        setPaymentStatus('error');
+      },
+      onCancel: () => {
+        console.log('Payment cancelled');
+      }
+    });
+
+    buttons.render(paypalContainerRef.current).then(() => {
+      paypalButtonsRef.current = buttons;
+    }).catch(err => {
+      console.error('Button render error:', err);
+    });
+
+    return () => {
+      if (paypalButtonsRef.current) {
+        try {
+          paypalButtonsRef.current.close();
+        } catch (e) {
+          // Ignore
+        }
+        paypalButtonsRef.current = null;
       }
     };
-  }, [selectedTier, nights, amountToPay, paymentType, bookingData]);
+  }, [sdkReady, selectedTier, paymentType, amountToPay, bookingData]);
 
   if (paymentStatus === 'success') {
     return (
@@ -107,7 +149,7 @@ const PaymentPage = () => {
               </p>
               <div className="bg-[#8A9B68]/10 p-6 rounded-xl mb-8 text-left">
                 <p className="text-[#5D4E6D] font-montserrat">
-                  <strong>Package:</strong> {selectedTier.name} ({selectedTier.groupSize} people)<br />
+                  <strong>Package:</strong> {selectedTier.name} ({peopleCount} people)<br />
                   <strong>Duration:</strong> {nights} nights<br />
                   <strong>Amount Paid:</strong> ${amountToPay.toLocaleString()} ({paymentType === 'deposit' ? 'Deposit' : 'Full Payment'})
                   {paymentType === 'deposit' && (
@@ -161,7 +203,7 @@ const PaymentPage = () => {
         </div>
       </section>
 
-      {/* Booking Summary (if coming from booking form) */}
+      {/* Booking Summary */}
       {bookingData && (
         <section className="py-8 bg-[#8A9B68]/10 border-b border-[#8A9B68]/20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -180,7 +222,7 @@ const PaymentPage = () => {
       <section className="py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Package Selection */}
+            {/* Left Column - Selection */}
             <div>
               {!bookingData && (
                 <>
@@ -303,10 +345,10 @@ const PaymentPage = () => {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className={`w-5 h-5 rounded-full border-2 ${
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                           paymentType === 'deposit' ? 'border-[#5D4E6D] bg-[#5D4E6D]' : 'border-[#D7C49E]'
                         }`}>
-                          {paymentType === 'deposit' && <Check className="w-3 h-3 text-white m-auto" />}
+                          {paymentType === 'deposit' && <Check className="w-3 h-3 text-white" />}
                         </div>
                         <div>
                           <p className="font-montserrat font-medium text-[#5D4E6D]">Pay Deposit Now</p>
@@ -327,10 +369,10 @@ const PaymentPage = () => {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className={`w-5 h-5 rounded-full border-2 ${
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                           paymentType === 'full' ? 'border-[#5D4E6D] bg-[#5D4E6D]' : 'border-[#D7C49E]'
                         }`}>
-                          {paymentType === 'full' && <Check className="w-3 h-3 text-white m-auto" />}
+                          {paymentType === 'full' && <Check className="w-3 h-3 text-white" />}
                         </div>
                         <div>
                           <p className="font-montserrat font-medium text-[#5D4E6D]">Pay Full Amount</p>
@@ -364,7 +406,7 @@ const PaymentPage = () => {
               </div>
             </div>
 
-            {/* Payment Form */}
+            {/* Right Column - Payment */}
             <div>
               <div className="bg-white rounded-3xl p-8 shadow-xl sticky top-24">
                 <div className="flex items-center gap-3 mb-6">
@@ -421,8 +463,14 @@ const PaymentPage = () => {
                   </div>
                 </div>
 
-                {/* PayPal/Venmo Button Container */}
-                <div id="paypal-button-container" className="mb-6 min-h-[150px]"></div>
+                {/* PayPal Button Container */}
+                <div ref={paypalContainerRef} id="paypal-button-container" className="mb-6 min-h-[150px]">
+                  {!sdkReady && (
+                    <div className="flex items-center justify-center h-[150px]">
+                      <div className="animate-spin w-8 h-8 border-4 border-[#5D4E6D] border-t-transparent rounded-full"></div>
+                    </div>
+                  )}
+                </div>
 
                 {paymentStatus === 'processing' && (
                   <div className="text-center py-4">
@@ -441,7 +489,7 @@ const PaymentPage = () => {
                 {/* Security Note */}
                 <div className="flex items-center gap-3 justify-center text-[#8A9B68]">
                   <Shield className="w-5 h-5" />
-                  <p className="font-montserrat text-sm">Secure payments via PayPal & Venmo</p>
+                  <p className="font-montserrat text-sm">Secure payments via PayPal and Venmo</p>
                 </div>
               </div>
 
