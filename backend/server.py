@@ -25,6 +25,12 @@ app = FastAPI(title="The Lair of Liz API", description="Backend API for The Lair
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Root-level health check for Kubernetes deployment
+@app.get("/health")
+async def root_health_check():
+    """Health check endpoint for Kubernetes liveness/readiness probes"""
+    return {"status": "healthy", "service": "The Lair of Liz"}
+
 
 # ============== Models ==============
 
