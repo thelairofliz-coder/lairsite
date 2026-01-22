@@ -14,10 +14,17 @@ from datetime import datetime
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# MongoDB connection with error handling
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+db_name = os.environ.get('DB_NAME', 'lair_of_liz')
+
+try:
+    client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=5000)
+    db = client[db_name]
+except Exception as e:
+    logging.error(f"MongoDB connection error: {e}")
+    client = None
+    db = None
 
 # Create the main app without a prefix
 app = FastAPI(title="The Lair of Liz API", description="Backend API for The Lair of Liz spiritual campground")
