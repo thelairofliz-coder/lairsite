@@ -169,9 +169,9 @@ async def create_booking(booking_data: BookingCreate):
         raise HTTPException(status_code=500, detail="Failed to create booking")
 
 @api_router.get("/bookings", response_model=List[Booking])
-async def get_bookings():
-    """Get all booking inquiries"""
-    bookings = await db.bookings.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+async def get_bookings(skip: int = 0, limit: int = 100):
+    """Get all booking inquiries with pagination"""
+    bookings = await db.bookings.find({}, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     return [Booking(**booking) for booking in bookings]
 
 @api_router.get("/bookings/{booking_id}", response_model=Booking)
