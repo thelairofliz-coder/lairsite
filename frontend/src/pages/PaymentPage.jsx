@@ -4,7 +4,7 @@ import { CreditCard, Check, Shield, ArrowRight, Feather, AlertCircle, Users, Sma
 import { Button } from '../components/ui/button';
 import { pricingTiers } from '../data/mock';
 
-const PAYPAL_CLIENT_ID = process.env.REACT_APP_PAYPAL_CLIENT_ID || 'ATLlnBcI9Kbs1hyLsTonXhrik7VD2gMJQIYH3BdmHiv0GfMdLgkdvPXVa5VQB8Ziga2uOFig4m6wsy4m';
+const PAYPAL_CLIENT_ID = process.env.REACT_APP_PAYPAL_CLIENT_ID;
 
 const PaymentPage = () => {
   const [searchParams] = useSearchParams();
