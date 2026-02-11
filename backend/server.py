@@ -238,9 +238,9 @@ async def update_contact_status(contact_id: str, status: str):
 # ============== Reviews Endpoints ==============
 
 @api_router.get("/reviews", response_model=List[Review])
-async def get_reviews():
-    """Get all reviews"""
-    reviews = await db.reviews.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
+async def get_reviews(skip: int = 0, limit: int = 50):
+    """Get all reviews with pagination"""
+    reviews = await db.reviews.find({}, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     return [Review(**review) for review in reviews]
 
 
