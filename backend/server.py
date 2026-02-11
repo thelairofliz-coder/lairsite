@@ -210,9 +210,9 @@ async def create_contact(contact_data: ContactCreate):
         raise HTTPException(status_code=500, detail="Failed to send message")
 
 @api_router.get("/contacts", response_model=List[Contact])
-async def get_contacts():
-    """Get all contact messages"""
-    contacts = await db.contacts.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+async def get_contacts(skip: int = 0, limit: int = 100):
+    """Get all contact messages with pagination"""
+    contacts = await db.contacts.find({}, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     return [Contact(**contact) for contact in contacts]
 
 @api_router.get("/contacts/{contact_id}", response_model=Contact)
