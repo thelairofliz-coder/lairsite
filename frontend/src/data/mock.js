@@ -3,12 +3,21 @@
 export const siteInfo = {
   name: "The Lair of Liz",
   tagline: "An Elevated Rustic Sanctuary",
-  subTagline: "A private and personally curated sanctuary nestled in the heart of the Manistee National Forest, designed exclusively for your group's retreat. Experience connection and renewal surrounded by towering trees and pristine wilderness.",
+  subTagline: "A Regenerative Permaculture homestead focused on teaching survival skills and reconnecting with nature. We provide a safe haven for healing, growth, and community in the heart of the Manistee National Forest.",
   phone: "231-287-7821",
   email: "thelairofliz@gmail.com",
   address: "8732 E 72nd St, Chase MI, 49623",
   ownerName: "Elizabeth Towne",
-  location: "Chase, MI • Manistee National Forest"
+  location: "Chase, MI • Manistee National Forest",
+  motto: "Know you can grow!"
+};
+
+// Mission statement
+export const mission = {
+  statement: "Our mission is to provide a safe haven for survivors of domestic abuse, where they can heal and regain control of their lives. We firmly believe that everyone deserves to live free from abuse, and we are committed to creating a supportive environment that facilitates the healing process.",
+  lgbtqFriendly: true,
+  cannabisFriendly: true,
+  badges: ["LGBTQ+ Friendly", "Cannabis Friendly", "Survivor Safe Space", "All Ages Welcome"]
 };
 
 // Development notice
