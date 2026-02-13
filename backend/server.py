@@ -148,8 +148,8 @@ async def create_status_check(input: StatusCheckCreate):
     return status_obj
 
 @api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
+async def get_status_checks(skip: int = 0, limit: int = 100):
+    status_checks = await db.status_checks.find({}, {"_id": 0}).skip(skip).limit(limit).to_list(limit)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
 
@@ -169,9 +169,9 @@ async def create_booking(booking_data: BookingCreate):
         raise HTTPException(status_code=500, detail="Failed to create booking")
 
 @api_router.get("/bookings", response_model=List[Booking])
-async def get_bookings():
-    """Get all booking inquiries"""
-    bookings = await db.bookings.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+async def get_bookings(skip: int = 0, limit: int = 100):
+    """Get all booking inquiries with pagination"""
+    bookings = await db.bookings.find({}, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     return [Booking(**booking) for booking in bookings]
 
 @api_router.get("/bookings/{booking_id}", response_model=Booking)
@@ -210,9 +210,9 @@ async def create_contact(contact_data: ContactCreate):
         raise HTTPException(status_code=500, detail="Failed to send message")
 
 @api_router.get("/contacts", response_model=List[Contact])
-async def get_contacts():
-    """Get all contact messages"""
-    contacts = await db.contacts.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+async def get_contacts(skip: int = 0, limit: int = 100):
+    """Get all contact messages with pagination"""
+    contacts = await db.contacts.find({}, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     return [Contact(**contact) for contact in contacts]
 
 @api_router.get("/contacts/{contact_id}", response_model=Contact)
@@ -238,9 +238,9 @@ async def update_contact_status(contact_id: str, status: str):
 # ============== Reviews Endpoints ==============
 
 @api_router.get("/reviews", response_model=List[Review])
-async def get_reviews():
-    """Get all reviews"""
-    reviews = await db.reviews.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
+async def get_reviews(skip: int = 0, limit: int = 50):
+    """Get all reviews with pagination"""
+    reviews = await db.reviews.find({}, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     return [Review(**review) for review in reviews]
 
 
