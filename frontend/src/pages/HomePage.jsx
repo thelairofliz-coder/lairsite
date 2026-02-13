@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Star, Feather, Moon, Trees, Users, Flame, Sparkles, Baby, Dog, Leaf, Construction } from 'lucide-react';
+import { ArrowRight, Star, Feather, Moon, Trees, Users, Flame, Sparkles, Baby, Dog, Leaf, Construction, Rainbow, Shield } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { siteInfo, reviews, values, amenities, propertyPhotos, developmentNotice, pricingTiers } from '../data/mock';
 
