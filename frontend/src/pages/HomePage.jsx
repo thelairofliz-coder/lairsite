@@ -46,8 +46,16 @@ const HomePage = () => {
               {siteInfo.subTagline}
             </p>
             
-            {/* Kid & Pet Friendly Badges */}
+            {/* Friendly Badges */}
             <div className="flex flex-wrap gap-3 mb-8">
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                <Rainbow className="w-4 h-4 text-[#D7C49E]" />
+                <span className="text-white font-montserrat text-sm">LGBTQ+ Friendly</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                <Leaf className="w-4 h-4 text-[#8A9B68]" />
+                <span className="text-white font-montserrat text-sm">Cannabis Friendly</span>
+              </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
                 <Baby className="w-4 h-4 text-[#D7C49E]" />
                 <span className="text-white font-montserrat text-sm">Kid-Friendly</span>
@@ -55,10 +63,6 @@ const HomePage = () => {
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
                 <Dog className="w-4 h-4 text-[#D7C49E]" />
                 <span className="text-white font-montserrat text-sm">Pet-Friendly</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Leaf className="w-4 h-4 text-[#8A9B68]" />
-                <span className="text-white font-montserrat text-sm">Working Farm</span>
               </div>
             </div>
 
