@@ -107,7 +107,7 @@ A comprehensive website for The Lair of Liz, an elevated rustic sanctuary locate
 
 ---
 
-## Completed Work (January 2026)
+## Completed Work (January-February 2026)
 - [x] Multi-page website with bohemian/rustic theme
 - [x] Full pricing structure with 5 tiers (including small group 1-5 people)
 - [x] "How many people?" input field on booking and payment pages
@@ -121,6 +121,14 @@ A comprehensive website for The Lair of Liz, an elevated rustic sanctuary locate
 - [x] New property photos with camping scenes added
 - [x] Facilitator walk-through timing (7 days - 3 months prior)
 - [x] Backend API for bookings and contacts
+- [x] Backend API endpoints for Reviews (`/api/reviews`)
+- [x] Backend API endpoints for Amenities (`/api/amenities`)
+- [x] Frontend pages (Reviews, Amenities) now fetch data from API
+
+## Wix Integration (February 2026)
+User has chosen **subdomain integration** method. Instructions provided:
+- Configure DNS CNAME record: `booking` → `booking-lair.preview.emergentagent.com`
+- After DNS propagation, `booking.lairofliz.com` will serve the booking app
 
 ---
 
