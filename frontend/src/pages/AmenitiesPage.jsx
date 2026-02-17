@@ -1,8 +1,13 @@
-import React from 'react';
-import { Flame, Droplets, Bath, Car, Trees, Star, BookOpen, Sparkles, Moon, Feather, Heart } from 'lucide-react';
-import { amenities, propertyPhotos, atmospherePhotos } from '../data/mock';
+import React, { useState, useEffect } from 'react';
+import { Flame, Droplets, Bath, Car, Trees, Star, BookOpen, Sparkles, Moon, Feather, Heart, Loader2, Baby, Dog } from 'lucide-react';
+import { propertyPhotos, atmospherePhotos } from '../data/mock';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const AmenitiesPage = () => {
+  const [amenities, setAmenities] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const iconMap = {
     Flame: Flame,
     Droplets: Droplets,
@@ -11,8 +16,27 @@ const AmenitiesPage = () => {
     Trees: Trees,
     Star: Star,
     BookOpen: BookOpen,
-    Sparkles: Sparkles
+    Sparkles: Sparkles,
+    Baby: Baby,
+    Dog: Dog
   };
+
+  useEffect(() => {
+    const fetchAmenities = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/amenities`);
+        if (response.ok) {
+          const data = await response.json();
+          setAmenities(data);
+        }
+      } catch (error) {
+        console.error('Error fetching amenities:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAmenities();
+  }, []);
 
   const bohemianTouches = [
     {
@@ -36,6 +60,14 @@ const AmenitiesPage = () => {
       icon: Moon
     }
   ];
+
+  if (loading) {
+    return (
+      <div className="bg-[#F8F5F2] min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#5D4E6D] animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#F8F5F2] min-h-screen">
@@ -79,6 +111,7 @@ const AmenitiesPage = () => {
             {bohemianTouches.map((touch, index) => (
               <div
                 key={index}
+                data-testid={`bohemian-touch-${index}`}
                 className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-500 flex gap-6 group"
               >
                 <div className="w-16 h-16 rounded-full bg-[#5D4E6D]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#5D4E6D] transition-colors duration-300">
@@ -114,6 +147,7 @@ const AmenitiesPage = () => {
               return (
                 <div
                   key={amenity.id}
+                  data-testid={`amenity-card-${amenity.id}`}
                   className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 text-center group"
                 >
                   <div className="w-14 h-14 rounded-full bg-[#D7C49E]/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-[#5D4E6D] transition-colors duration-300">

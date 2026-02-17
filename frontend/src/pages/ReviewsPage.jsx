@@ -1,8 +1,37 @@
-import React from 'react';
-import { Star, Quote, Feather } from 'lucide-react';
-import { reviews } from '../data/mock';
+import React, { useState, useEffect } from 'react';
+import { Star, Quote, Feather, Loader2 } from 'lucide-react';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ReviewsPage = () => {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/reviews`);
+        if (response.ok) {
+          const data = await response.json();
+          setReviews(data);
+        }
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReviews();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="bg-[#F8F5F2] min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#5D4E6D] animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#F8F5F2] min-h-screen">
       {/* Hero Section */}
@@ -29,6 +58,7 @@ const ReviewsPage = () => {
             {reviews.map((review, index) => (
               <div
                 key={review.id}
+                data-testid={`review-card-${review.id}`}
                 className={`bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden ${
                   index === 0 ? 'md:col-span-2' : ''
                 }`}
@@ -81,6 +111,7 @@ const ReviewsPage = () => {
           </p>
           <a
             href="/booking"
+            data-testid="begin-journey-btn"
             className="inline-block bg-[#B38E5D] hover:bg-[#8A9B68] text-white font-montserrat font-semibold px-10 py-4 rounded-full transition-all duration-300 hover:scale-105"
           >
             Begin Your Journey
