@@ -116,7 +116,7 @@ class Contact(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-# Review Model (for future use)
+# Review Model
 class Review(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     text: str
@@ -124,6 +124,14 @@ class Review(BaseModel):
     title: str
     rating: int = 5
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+# Amenity Model
+class Amenity(BaseModel):
+    id: int
+    name: str
+    description: str
+    icon: str
 
 
 # ============== Routes ==============
@@ -241,7 +249,36 @@ async def update_contact_status(contact_id: str, status: str):
 async def get_reviews(skip: int = 0, limit: int = 50):
     """Get all reviews with pagination"""
     reviews = await db.reviews.find({}, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+    # Return default reviews if database is empty
+    if not reviews:
+        return [
+            Review(id="1", text="Our women's circle found magic here. The energy of the land is pure, and Liz made everyone feel seen and welcomed.", author="Maya", title="Spiritual Retreat Leader", rating=5),
+            Review(id="2", text="Finally, an RV park that didn't judge our vintage camper! Our family reunion was perfect. The kids loved exploring the woods.", author="The Chen Family", title="Family Reunion", rating=5),
+            Review(id="3", text="As a queer camping group, we felt safe, celebrated, and free. This place is a gift.", author="Alex & Friends", title="Community Gathering", rating=5),
+            Review(id="4", text="The stars, the silence, the freedom… our yoga retreat was transformative. We'll be back!", author="River", title="Yoga Instructor", rating=5),
+        ]
     return [Review(**review) for review in reviews]
+
+
+# ============== Amenities Endpoints ==============
+
+@api_router.get("/amenities", response_model=List[Amenity])
+async def get_amenities():
+    """Get all amenities"""
+    amenities = await db.amenities.find({}, {"_id": 0}).to_list(100)
+    # Return default amenities if database is empty
+    if not amenities:
+        return [
+            Amenity(id=1, name="Fire Pits", description="Multiple fire circles for drum circles & storytelling", icon="Flame"),
+            Amenity(id=2, name="Water Station", description="Fresh water access for all campers", icon="Droplets"),
+            Amenity(id=3, name="Outhouse Facilities", description="Basic facilities with upgrades coming soon", icon="Bath"),
+            Amenity(id=4, name="Secluded Parking", description="Private parking for RVs and vehicles of all types", icon="Car"),
+            Amenity(id=5, name="Open Fields", description="Perfect for meditation, yoga & ceremonies", icon="Trees"),
+            Amenity(id=6, name="Stargazing Skies", description="Minimal light pollution for celestial viewing", icon="Star"),
+            Amenity(id=7, name="Kid-Friendly", description="Safe spaces for children to explore nature", icon="Baby"),
+            Amenity(id=8, name="Pet-Friendly", description="Your furry companions are welcome here", icon="Dog"),
+        ]
+    return [Amenity(**amenity) for amenity in amenities]
 
 
 # Include the router in the main app
